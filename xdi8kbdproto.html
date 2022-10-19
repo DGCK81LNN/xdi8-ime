@@ -23,6 +23,12 @@ url('https://wiki.xdi8.top/w/resources/assets/XEGOEPUAall%20Regular.ttf') format
   --color-ext: #7795ac;
 }
 
+[id=xdi8kb] *[class] {
+  all: revert;
+  font-family: inherit;
+  font-size: 1em;
+}
+
 #xdi8kb {
   background-color: var(--color-bg);
   font: 1.5rem "XEGOEPUAall", sans-serif;
@@ -52,11 +58,9 @@ url('https://wiki.xdi8.top/w/resources/assets/XEGOEPUAall%20Regular.ttf') format
   -webkit-backdrop-filter: blur(50px);
 }
 
-#xdi8kb .row {
-all: revert;
+#xdi8kb .kbrow {
   display: flex;
 }
-#xdi8kb .key { all: revert }
 #xdi8kb .key-interior {
   box-sizing: border-box;
   line-height: 2rem;
@@ -159,7 +163,7 @@ box-sizing: border-box;
 </div>
 <div id=xdi8kb-wrap lang=qdx>
 <div id=xdi8kb
-  ><div class="row"
+  ><div class="kbrow"
     ><div class="key key-sm" role=button data-key="1"><div class="key-interior"></div></div
     ><div class="key key-sm" role=button data-key="2"><div class="key-interior"></div></div
     ><div class="key key-sm" role=button data-key="3"><div class="key-interior"></div></div
@@ -169,7 +173,7 @@ box-sizing: border-box;
     ><div class="key key-sm" role=button data-key="7"><div class="key-interior"></div></div
     ><div class="key key-sm" role=button data-key="8"><div class="key-interior"></div></div
   ></div
-  ><div class="row"
+  ><div class="kbrow"
     ><div class="key key-sm" role=button data-key="q"><div class="key-interior"></div></div
     ><div class="key key-sm" role=button data-key="w"><div class="key-interior"></div></div
     ><div class="key key-sm" role=button data-key="e"><div class="key-interior"></div></div
@@ -181,7 +185,7 @@ box-sizing: border-box;
     ><div class="key key-sm" role=button data-key="o"><div class="key-interior"></div></div
     ><div class="key key-sm" role=button data-key="p"><div class="key-interior"></div></div
   ></div
-  ><div class="row"
+  ><div class="kbrow"
     ><div class="halfpad"></div
     ><div class="key key-sm" role=button data-key="a"><div class="key-interior"></div></div
     ><div class="key key-sm" role=button data-key="s"><div class="key-interior"></div></div
@@ -194,7 +198,7 @@ box-sizing: border-box;
     ><div class="key key-sm" role=button data-key="l"><div class="key-interior"></div></div
     ><div class="halfpad"></div
   ></div
-  ><div class="row"
+  ><div class="kbrow"
     ><div class="key key-md key-shift" role=button
       ><div class="key-interior key-interior-gray"
         ><svg class="key-icon key-icon-shift" viewBox="0 0 100 100" height="1em"><path d="M32,56V78q0,7,7,7h22q7,0,7,-7V56H90q5,0,0,-4L51,13Q50,12,49,13L10,52q-5,4,0,4Z" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="miter" /></svg
@@ -217,7 +221,7 @@ box-sizing: border-box;
       ></div
     ></div
   ></div
-  ><div class="row"
+  ><div class="kbrow"
     ><div hidden class="key key-md key-altgr dim" role=button
       ><div class="key-interior key-interior-gray key-captsm"><!--&#x1f310;&#xfe0e;--></div
     ></div
@@ -746,7 +750,6 @@ out.onfocus = out.onclick = function () {
 </p>
 </article><hr>
 <p>by <a href="https://wiki.xdi8.top/wiki/User:DGCK81LNN">DGCK81LNN</a> 2022–10–19</p>
-<p><a href="https://github.com/DGCK81LNN/xdi8-ime">源代码</a>
 <p>QQ: 3470524928</p>
 <p>希顶语字体 XEGOEPUAall 和希顶字母图腾图片取自<a href="https://wiki.xdi8.top/" target=_blank>希顶维基</a>。</p>
 </body>
