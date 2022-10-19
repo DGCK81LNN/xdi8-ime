@@ -1,0 +1,753 @@
+<!DOCTYPE HTML>
+<html lang="cmn-Hans">
+<meta charset=UTF-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>Xdi8IME 软键盘原型演示</title>
+<link rel=stylesheet href="https://dgck81lnn.github.io/bootstrap-lnn/dist/bootstrap-lnn.min.css">
+<style>
+@font-face {
+font-family: XEGOEPUAall;
+src: 
+url('https://wiki.xdi8.top/w/resources/assets/XEGOEPUAall%20Regular.ttf') format('truetype');
+}
+
+:lang(qdx),
+.xegoe { font-family: XEGOEPUAall, sans-serif }
+
+#xdi8kb-wrap {
+  --color-text: black;
+  --color-bg: #d0d3d9;
+  --color-key: #fff;
+  --color-press: #aab0bb;
+  --color-shad: #87898d;
+  --color-ext: #7795ac;
+}
+
+#xdi8kb {
+  background-color: var(--color-bg);
+  font: 1.5rem "XEGOEPUAall", sans-serif;
+  max-width: 24rem;
+  color: var(--color-text);
+}
+#xdi8kb-wrap[data-theme="night"] {
+  --color-text: white;
+  --color-bg: #6f6f6f;
+  --color-key: #9b9b9b;
+  --color-press: #797979;
+  --color-shad: #434343;
+  --color-ext: #bce;
+}
+#xdi8kb-wrap[data-theme="glass"] {
+  --color-text: white;
+  --color-bg: #343434;
+  --color-key: #797979;
+  --color-press: #505050;
+  --color-shad: #1d1d1d;
+  --color-ext: #bce;
+  background: center / contain no-repeat url("https://wiki.xdi8.top/w/images/e/ed/Xdi8_Aho.png");
+}
+#xdi8kb-wrap[data-theme="glass"] #xdi8kb {
+  opacity: 87%;
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+}
+
+#xdi8kb .row {
+all: revert;
+  display: flex;
+}
+#xdi8kb .key { all: revert }
+#xdi8kb .key-interior {
+  box-sizing: border-box;
+  line-height: 2rem;
+  height: 2.625rem;
+  padding: 0.25rem 0;
+  text-align: center;
+  background-color: var(--color-key);
+  margin: 0.3125rem 0.1875rem;
+  border-radius: 0.3125rem;
+  box-shadow: 0 1px var(--color-shad);
+}
+#xdi8kb .pressed .key-interior { background-color: var(--color-press) }
+#xdi8kb .key-interior-gray { background-color: var(--color-press) }
+#xdi8kb .pressed .key-interior-gray { background-color: var(--color-key) }
+/* Shift 键大写或中写状态 */
+#xdi8kb .key-shift:not([data-state="0"]) .key-interior {
+  background-color: #fff;
+  color: #000;
+}
+#xdi8kb .key-shift:not([data-state="0"]).ext .key-interior { color: #7795ac }
+
+/* Shift 和退格键图标 */
+#xdi8kb .key-shift .key-interior,
+#xdi8kb .key-bksp .key-interior { position: relative }
+#xdi8kb .key-shift .key-icon,
+#xdi8kb .key-bksp .key-icon {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  margin: auto;
+  visibility: hidden;
+}
+
+#xdi8kb .key-shift[data-state="0"] .key-icon-shift,
+#xdi8kb .key-shift[data-state="1"] .key-icon-shift-filled,
+#xdi8kb .key-shift[data-state="2"] .key-icon-shift-filled,
+#xdi8kb .key-shift[data-state="3"] .key-icon-shift-filled-locked,
+#xdi8kb .key-bksp:not(.pressed) .key-icon-bksp,
+#xdi8kb .key-bksp.pressed .key-icon-bksp-filled { visibility: visible }
+
+#xdi8kb-wrap[data-funny-shift] .key-shift .key-icon { transition: transform 150ms }
+#xdi8kb .key-shift[data-state="2"] .key-icon { transform: rotate(180deg) }
+#xdi8kb .key-shift[data-state="3"] .key-icon { transform: rotate(360deg) }
+
+/* 按键宽度 */
+#xdi8kb .key-sm,
+#xdi8kb .key-space { flex: 1 }
+#xdi8kb .key-md { width: 12.5% }
+#xdi8kb .key-lg { width: 25% }
+
+/* a、s、d 一行左右两边各空半格 */
+#xdi8kb .halfpad { all:revert; width: 5% }
+/* Shift 和退格键与同一行的字母键之间空 1/4 格 */
+#xdi8kb .quarterpad { all:revert; width: 2.5% }
+
+/* 希扩字母，以及更多字母状态下的 Shift 键，显示为蓝色 */
+#xdi8kb .key.ext { color: var(--color-ext) }
+/* 禁用按键 */
+#xdi8kb .key.dim,
+#xdi8kb .key:disabled {
+  color: var(--color-bg);
+  /*text-shadow: 0 -1px #d0d3d9;*/
+}
+
+/* 使不同写体的字母看起来都垂直居中 */
+#xdi8kb.case-0 .key-sm .key-interior { line-height: 1.45 }
+#xdi8kb.case-1 .key-sm .key-interior { line-height: 1.25 }
+#xdi8kb.case-2 .key-sm .key-interior { line-height: 1 }
+
+/* 空格键上的字 */
+#xdi8kb .key-captsm { font-size: 1rem }
+
+/* 字母预览 */
+#xdi8kb-balloon {
+  position: absolute;
+  font: 2.25rem "XEGOEPUAall";
+  line-height: 3rem;
+  width: 3rem;
+  padding: 0.375rem 0;
+  text-align: center;
+  color: var(--color-text);
+  background-color: var(--color-key);
+  border-radius: 0.46875rem;
+  box-shadow: /*0 1px #87898d,*/ 0 4px 16px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, calc(-100% - 1rem));
+}
+
+
+#out {
+font: 1rem XEGOEPUAall;
+width: 100%;
+height: 15rem;
+box-sizing: border-box;
+}
+</style>
+</head>
+<body class=m-2>
+<h1><span lang=qdx></span>IME 软键盘原型演示</h1>
+<div class="my-2">
+<textarea id=out style=form-control placeholder="在此输入"></textarea>
+</div>
+<div id=xdi8kb-wrap lang=qdx>
+<div id=xdi8kb
+  ><div class="row"
+    ><div class="key key-sm" role=button data-key="1"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="2"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="3"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="4"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="5"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="6"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="7"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="8"><div class="key-interior"></div></div
+  ></div
+  ><div class="row"
+    ><div class="key key-sm" role=button data-key="q"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="w"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="e"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="r"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="t"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="y"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="u"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="i"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="o"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="p"><div class="key-interior"></div></div
+  ></div
+  ><div class="row"
+    ><div class="halfpad"></div
+    ><div class="key key-sm" role=button data-key="a"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="s"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="d"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="f"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="g"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="h"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="j"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="k"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="l"><div class="key-interior"></div></div
+    ><div class="halfpad"></div
+  ></div
+  ><div class="row"
+    ><div class="key key-md key-shift" role=button
+      ><div class="key-interior key-interior-gray"
+        ><svg class="key-icon key-icon-shift" viewBox="0 0 100 100" height="1em"><path d="M32,56V78q0,7,7,7h22q7,0,7,-7V56H90q5,0,0,-4L51,13Q50,12,49,13L10,52q-5,4,0,4Z" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="miter" /></svg
+        ><svg class="key-icon key-icon-shift-filled" viewBox="0 0 100 100" height="1em"><path d="M32,56V78q0,7,7,7h22q7,0,7,-7V56H90q5,0,0,-4L51,13Q50,12,49,13L10,52q-5,4,0,4Z" fill="currentColor" stroke="currentColor" stroke-width="7" /></svg
+        ><svg class="key-icon key-icon-shift-filled-locked" viewBox="0 0 100 100" height="1em"><path d="M32,48v10q0,6,6,6h26q6,0,6,-6V48H89q4,0,0,-4L51,10Q50,9,49,10L11,44q-4,4,0,4ZM64,77q6,0,6,6v4q0,6,-6,6H38q-6,0,-6,-6v-4q0,-6,6,-6z" fill="currentColor" stroke="currentColor" stroke-width="7" /></svg
+      ></div></div
+    ><div class="quarterpad"></div
+    ><div class="key key-sm" role=button data-key="z"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="x"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="c"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="v"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="b"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="n"><div class="key-interior"></div></div
+    ><div class="key key-sm" role=button data-key="m"><div class="key-interior"></div></div
+    ><div class="quarterpad"></div
+    ><div class="key key-md key-bksp" role=button
+      ><div class="key-interior key-interior-gray"
+        ><svg class="key-icon key-icon-bksp" viewBox="0 0 100 100" height="1em"><path d="M82 14q10 0 10 10v52q0 10-10 10h-37q-7 0-14-7l-21-23q-6-6 0-12l21-23q7-7 14-7z" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /><path d="M57 55l11.5 11.5a3.5355 3.5355 90 005-5l-11.5-11.5 11.5-11.5a3.5355 3.5355 90 00-5-5l-11.5 11.5-11.5-11.5a3.5355 3.5355 90 00-5 5l11.5 11.5-11.5 11.5a3.5355 3.5355 90 005 5z" fill="currentColor" /></svg
+        ><svg class="key-icon key-icon-bksp-filled" viewBox="0 0 100 100" height="1em"><path d="M82 14q10 0 10 10v52q0 10-10 10h-37q-7 0-14-7l-21-23q-6-6 0-12l21-23q7-7 14-7z" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /><path d="M82 14q10 0 10 10v52q0 10-10 10h-37q-7 0-14-7l-21-23q-6-6 0-12l21-23q7-7 14-7zM57 55l11.5 11.5a3.5355 3.5355 90 005-5l-11.5-11.5 11.5-11.5a3.5355 3.5355 90 00-5-5l-11.5 11.5-11.5-11.5a3.5355 3.5355 90 00-5 5l11.5 11.5-11.5 11.5a3.5355 3.5355 90 005 5z" fill="currentColor" /></svg
+      ></div
+    ></div
+  ></div
+  ><div class="row"
+    ><div hidden class="key key-md key-altgr dim" role=button
+      ><div class="key-interior key-interior-gray key-captsm"><!--&#x1f310;&#xfe0e;--></div
+    ></div
+    ><div class="key key-lg key-symbol dim" role=button
+      ><div class="key-interior key-interior-gray key-captsm"></div
+    ></div
+    ><div class="key key-space" role=button id=xdi8kb-key-space data-key=" "
+      ><div class="key-interior key-captsm"></div
+    ></div
+    ><div class="key key-lg key-enter" role=button
+      ><div class="key-interior key-interior-gray key-captsm"><!--↵--></div
+    ></div
+  ></div
+></div>
+<div role=presentation id=xdi8kb-balloon hidden></div>
+</div>
+<div class="btn-toolbar my-2">
+<div class="btn-group">
+<button class="btn btn-outline-secondary" onclick="$kb.parentElement.dataset.theme=''">浅色</button>
+<button class="btn btn-outline-secondary"  onclick="$kb.parentElement.dataset.theme='night'">深色</button>
+<button class="btn btn-outline-secondary" onclick="$kb.parentElement.dataset.theme='glass'">玻璃</button>
+</div>
+<div class="btn-group ms-1">
+<button class="btn btn-outline-secondary" onclick="var d=$kb.parentElement;d.hasAttribute('data-funny-shift')?(textContent='FunnyShift',d.removeAttribute('data-funny-shift')):(textContent='FunnyShift ON',d.setAttribute('data-funny-shift',''))">FunnyShift</button>
+</div>
+</div>
+<script>
+
+//#region 辅助函数
+
+/**
+ * @template {string | number | symbol} T
+ * @template U
+ * @param {Record<T, U>} record
+ * @param {T} key
+ */
+function getRecordValue(record, key) {
+  if (Object.prototype.hasOwnProperty.call(record, key)) return record[key]
+}
+
+/**
+ * @param {number} i 序号
+ * @param {number} cas 写体类型：0—大写，1—小写，2—中写
+ */
+function getShidinnLetter(i, cas) {
+  return String.fromCharCode(0xe020 + i + (i >> 4 << 5) + (cas << 4))
+}
+
+const chatAlphabet = "!bpmwjqxynzDsrHNldtgkh45vF7BcfuaoeEAYL62T83V1i"
+const altMap = {...")!@#$%^&*("}
+
+function shidinnLetterNoFromCA(ca, alt) {
+  if (alt) ca = getRecordValue(altMap, ca) || ca.toUpperCase()
+  const no = chatAlphabet.indexOf(ca)
+  if (no === -1) return undefined
+  return no
+}
+
+/**
+ * 为一个 HTML 元素添加或移除指定的 class
+ * @param {HTMLElement} $el
+ * @param {string} clas
+ * @param {boolean} togl
+ */
+function setElementClass($el, clas, togl) {
+  if (togl) $el.classList.add(clas)
+  else $el.classList.remove(clas)
+}
+
+/**
+ * @param {{ left: number, top:number, right: number, bottom: number }} rect
+ * @param {number} x
+ * @param {number} y
+ */
+function isPointInRect(rect, x, y) {
+  return (
+    x >= rect.left &&
+    x < rect.right &&
+    y >= rect.top &&
+    y < rect.bottom
+  )
+}
+
+/**
+ * @param {ChildNode} $node
+ * @param {($parent: ParentNode) => boolean} predicate
+ */
+function findNodeAncestor($node, predicate) {
+  do {
+    if (predicate($node)) return $node
+    $node = $node.parentNode
+  } while ($node.parentNode)
+}
+
+//#endregion
+
+//#region 获取 DOM 节点
+
+const $kb = document.getElementById("xdi8kb")
+const $letters = Array.from($kb.querySelectorAll(".key-sm"))
+const $shift = $kb.querySelector(".key-shift")
+const $bksp = $kb.querySelector(".key-bksp")
+const $altgr = $kb.querySelector(".key-globe")
+const $space = $kb.querySelector(".key-space")
+const $enter = $kb.querySelector(".key-enter")
+const $balloon = document.getElementById("xdi8kb-balloon")
+
+//#endregion
+
+//#region Shift 键处理
+
+/** Shift 是否已按下 */
+let shift = false
+/** 上次按下 Shift 的时间 */
+let shiftDownTime = -Infinity
+/** 上次松开 Shift 的时间 */
+let shiftUpTime = -Infinity
+/** 原生大写锁定是否已开启 */
+let realCapsLock = false
+
+/** 当前已敲击 Shift 键的次数。0—小写，1—大写粘滞，2—中写粘滞，3—大写锁定 */
+let caseState = 0
+/** 更多字母粘滞是否已开启（仅软键盘） */
+let stickyAltGlyphs = false
+/** Shift 按下期间是否按了其他键 */
+let keyPressedDuringShift = false
+
+/** 判定为长按的最小按键时长（毫秒） */
+const minHoldDuration = 150
+/** 判定为连续敲击的最大敲击间隔（毫秒） */
+const maxConsecTapInterv = 300
+
+/** 判断当前状态下字母写体 */
+function getCase() {
+  if (realCapsLock) return 0
+  return [1, 0, 2, 0][caseState]
+}
+
+/** 判断当前是否开启更多字母 */
+function getAlt(kbOnly) {
+  return stickyAltGlyphs || shift || !kbOnly && swipeAlt
+}
+
+function onShiftDown(isScreenKb, time) {
+  if (shift) return
+  shift = true
+
+  keyPressedDuringShift = false
+  shiftDownTime = time
+  updateSoftKb()
+}
+
+function onShiftUp(isScreenKb, time) {
+  if (!shift) return
+  shift = false
+
+  if (!keyPressedDuringShift) {
+    if (time - shiftDownTime <= minHoldDuration)
+      handleShiftTap()
+    else if (isScreenKb)
+      stickyAltGlyphs = true
+  }
+
+  shiftUpTime = time
+  updateSoftKb()
+}
+
+/** 处理 Shift 敲击 */
+function handleShiftTap() {
+  // 更多字母粘滞下直接返回初始状态；
+  // 但若软大写锁定开启则仍保持大写锁定状态
+  if (stickyAltGlyphs) {
+    stickyAltGlyphs = false
+    if (caseState !== 3 && !realCapsLock) caseState = 0
+    return
+  }
+
+  if (realCapsLock) return
+
+  // 软大写锁定下直接返回初始状态
+  if (caseState === 3) {
+    caseState = 0
+    return
+  }
+
+  // 是否已经在大写、中写粘滞状态停留
+  const hasPaused = caseState !== 0 && shiftDownTime - shiftUpTime > maxConsecTapInterv
+  if (hasPaused) // 在粘滞状态下返回初始状态
+    caseState = 0
+  else // 连敲
+    caseState++
+}
+
+$shift.addEventListener("touchstart", ev => {
+  onShiftDown(true, ev.timeStamp)
+  ev.preventDefault()
+}, { passive: false })
+$shift.addEventListener("touchend", ev => {
+  onShiftUp(true, ev.timeStamp)
+  ev.preventDefault()
+}, { passive: false })
+
+function updateSoftKb() {
+  const cas = getCase()
+  const alt = getAlt(true)
+
+  setElementClass($kb, "case-0", cas === 0)
+  setElementClass($kb, "case-1", cas === 1)
+  setElementClass($kb, "case-2", cas === 2)
+
+  setElementClass($shift, "ext", alt)
+  $shift.dataset.state = caseState
+  setElementClass($shift, "pressed", shift)
+
+  for (let $key of $letters) {
+    const i = shidinnLetterNoFromCA($key.dataset.key, alt)
+    setElementClass($key, "ext", i > 45)
+    $key.disabled = i === undefined
+    $key.firstElementChild.textContent = i === undefined ? "" : getShidinnLetter(i, cas)
+  }
+
+  // debug
+  //document.getElementById("info").textContent = `${["小写","大写粘滞","中写粘滞","大写锁定"][caseState]} ${["基本字母","更多字母","更多字母粘滞"][stickyAltGlyphs*2||+alt]}`
+}
+
+function onKeyPress() {
+  let needToUpdateKb = false
+  if (shift) keyPressedDuringShift = true
+  if (caseState !== 3) {
+    caseState = 0
+    needToUpdateKb = true
+  }
+  if (stickyAltGlyphs) {
+    stickyAltGlyphs = false
+    needToUpdateKb = true
+  }
+  if (needToUpdateKb) updateSoftKb()
+}
+
+//#endregion
+
+function getCharToInput(key) {
+  const xdno = shidinnLetterNoFromCA(key, getAlt())
+  return xdno !== undefined ? getShidinnLetter(xdno, getCase()) : key
+}
+
+function inputChar(key) {
+  document.execCommand("insertText", false, getCharToInput(key))
+
+  swipeAlt = false
+
+  onKeyPress()
+}
+
+function backSpc() {
+  document.execCommand("delete")
+  onKeyPress()
+}
+
+//#region 软键盘字母按键和空格处理
+
+const $slidables = [...$letters, $space]
+const useBalloon = true
+const mouseTouch = Symbol("mouseTouch")
+let touchId = null
+let $slide = null
+let vx = 0
+let vy = 0
+let startX = 0
+let startY = 0
+let keyDownTime = -Infinity
+let slideMoved = false
+let swipeAlt = false
+/** 触发滑动 AltGr 时触点在水平方向上最多偏离按键边缘的像素数 */
+const swipeAltMaxDeltaX = 20
+/** 触发滑动 AltGr 时触点在竖直方向上最少需要移动的像素数 */
+const swipeAltMinDeltaY = 30
+
+function updateBalloon(rect, yOffset = 0) {
+  if (!(useBalloon && $slide && $letters.includes($slide))) {
+    $balloon.hidden = true
+    return
+  }
+
+  if (!rect) rect = $slide.getBoundingClientRect()
+  $balloon.textContent = getCharToInput($slide.dataset.key)
+  Object.assign($balloon.style, {
+    left: `${rect.left + rect.width / 2 + vx}px`,
+    top: `${rect.top + vy + yOffset}px`,
+  })
+  $balloon.hidden = false
+}
+
+function onTouchStart(sx, sy, time) {
+  slideMoved = false
+  startX = sx
+  startY = sy
+  swipeAlt = false
+  return onTouchUpdate(sx, sy, time)
+}
+
+function onTouchUpdate(sx, sy, time) {
+  vx = window.scrollX
+  vy = window.scrollY
+  const x = sx - vx
+  const y = sy - vy
+  const kbRect = $kb.getBoundingClientRect()
+
+  let rect = $slide && $slide.getBoundingClientRect()
+  if (
+    // 滑动 AltGr，在初始键上竖直滑动选择其他字母
+    $slide &&
+    !slideMoved && // 不能是在触发过滑键后
+    shidinnLetterNoFromCA($slide.dataset.key, true) !== undefined && // 当前按键需要有替代字母
+    // 未离开当前按键宽度太多
+    x >= rect.left - swipeAltMaxDeltaX &&
+    x < rect.right + swipeAltMaxDeltaX
+  ) {
+    swipeAlt = Math.abs(sy - startY) > swipeAltMinDeltaY
+    let dy = 0
+    if (swipeAlt) {
+      // 触发滑动 AltGr 时字符预览气泡随触点上下移动
+      dy = sy - startY
+      // 滑越远移动越慢
+      if (dy >= 0) dy = Math.atan(dy / 30) * 30
+      else dy = Math.atan(dy / 100) * 100
+    }
+    updateBalloon(rect, dy)
+    return
+  }
+
+  if (!isPointInRect(kbRect, x, y)) {
+    // 滑出软键盘外
+    // 若 Enter 已按下则取消之
+    if (enterPressed) enterUp(true)
+    // 视为触摸取消
+    return onTouchCancel()
+  }
+
+  // 没有发生滑动，直接返回
+  if ($slide && isPointInRect(rect, x, y)) return
+
+  // 普通滑动
+  const $slideNew = $slidables.find($key => {
+    if ($key.disabled) return
+    rect = $key.getBoundingClientRect()
+    return isPointInRect(rect, x, y)
+  })  
+  if (!$slideNew) return
+
+  if ($slide) {
+    // 滑到另一个键上
+    $slide.classList.remove("pressed")
+    slideMoved = true
+    swipeAlt = false
+  } else {
+    // 刚开始按下
+    keyDownTime = time
+  }
+  $slideNew.classList.add("pressed")
+  $slide = $slideNew
+  updateBalloon()
+
+  // 若从 Enter 键滑到字母或空格键，则取消按 Enter
+  if (enterPressed) enterUp(true)
+}
+
+function onTouchCommit(time) {
+  touchId = null
+  if (!$slide) return
+
+  inputChar($slide.dataset.key)
+  const $slide_ = $slide
+  $slide = null
+
+  setTimeout(() => {
+    $slide_.classList.remove("pressed")
+    updateBalloon()
+  }, keyDownTime + 100 - time)
+}
+
+function onTouchCancel() {
+  touchId = null
+  if (!$slide) return
+  $slide.classList.remove("pressed")
+  $slide = null
+  updateBalloon()
+}
+
+$kb.addEventListener("touchstart", ev => {
+  Array.from(ev.changedTouches).forEach(touch => {
+    if (touchId) onTouchCommit(ev.timeStamp)
+    touchId = touch.identifier
+    onTouchStart(touch.screenX, touch.screenY, ev.timeStamp)
+  })
+
+  // 若退格键已按下则停止之
+  bkspStop()
+
+  ev.preventDefault()
+}, { passive: false })
+
+$kb.addEventListener("touchmove", ev => {
+  const touch = Array.from(ev.changedTouches).find(touch => touch. identifier === touchId)
+  if (touch) onTouchUpdate(touch.screenX, touch.screenY, ev.timeStamp)
+
+  ev.preventDefault() 
+}, { passive: false })
+
+$kb.addEventListener("touchend", ev => {
+  const touch = Array.from(ev.changedTouches).find(touch => touch. identifier === touchId)
+  if (touch) onTouchCommit(ev.timeStamp)
+})
+
+$kb.addEventListener("touchcancel", ev => {
+  const touch = Array.from(ev.changedTouches).find(touch => touch. identifier === touchId)
+  if (touch) onTouchCancel()
+})
+
+//#endregion
+
+//#region 其他按键
+
+let bkspTickHandle = null
+let bkspDownTime = -Infinity
+/** touchcancel 简单处理 */
+let prevText = ""
+const bkspRepeatWait = 500
+const bkspRepeatInterv = 100
+
+function bkspTick() {
+  backSpc()
+  bkspTickHandle = setTimeout(bkspTick, bkspRepeatInterv)
+}
+function bkspStop(cancel, time) {
+  clearInterval(bkspTickHandle)
+  if (cancel) {
+    $bksp.classList.remove("pressed")
+    out.value = prevText
+  } else {
+    bkspTickHandle = setTimeout(() => {
+      $bksp.classList.remove("pressed")
+    }, bkspDownTime + 100 - time)
+  }
+}
+
+$bksp.addEventListener("touchstart", ev => {
+  prevText = out.value
+
+  $bksp.classList.add("pressed")
+  backSpc()
+  bkspDownTime = ev.timeStamp
+  bkspTickHandle = setTimeout(bkspTick, bkspRepeatWait)
+
+  ev.stopPropagation() // 阻止触发键盘触摸
+  ev.preventDefault()
+}, { passive: false })
+
+$bksp.addEventListener("touchend", ev => {
+  bkspStop(false, ev.timeStamp)
+})
+
+$bksp.addEventListener("touchcancel", ev => {
+  bkspStop(true)
+})
+
+let enterPressed = false
+let enterDownTime = -Infinity
+
+function enterUp(cancel, time) {
+  enterPressed = false
+  if (cancel) {
+    $enter.classList.remove("pressed")
+  } else {
+    inputChar("\n")
+    setTimeout(() => {
+      $enter.classList.remove("pressed")
+    }, enterDownTime + 100 - time)
+  }
+}
+
+$enter.addEventListener("touchstart", ev => {
+  $enter.classList.add("pressed")
+  enterPressed = true
+  enterDownTime = ev.timeStamp
+  ev.preventDefault()
+}, { passive: false })
+
+$enter.addEventListener("touchend", ev => {
+  enterUp(false, ev.timeStamp)
+})
+
+$enter.addEventListener("touchcancel", ev => {
+  enterUp(true)
+})
+
+//#endregion
+
+updateSoftKb()
+
+out.onfocus = out.onclick = function () {
+  if (this.readOnly) return
+  this.blur()
+  this.readOnly = true
+  this.focus()
+  setTimeout(() => {
+    this.readOnly = false
+  }, 0)
+}
+</script>
+
+<article>
+<h2>说明</h2>
+<ul>
+<li><p>本原型版本仅支持触摸屏。
+<li><p>本演示中的文本框会主动抑制系统软键盘的显示（已在 iOS 16.0 和安卓版 Chrome 中测试）。如果系统键盘仍然显示，欢迎向我反馈。
+<li><p>按住字母键向上或向下拖动来输入聊天字母为大写的希顶字母。
+<li><p>单击 Shift 键输入大写字母，双击输入中写字母，连点三次打开大写锁定。
+<li><p>长按 Shift 键可显示并键入聊天字母为大写的希顶字母。（此功能在开发中的正式版本中将从软键盘中移除，只适用于物理键盘输入）。
+<li><p>目前暂未为 Symbol 键（<span lang=qdx></span>）添加功能。
+</p></li></ul>
+<h2><span lang=qdx></span>IME 正式版本前瞻</h2>
+<p><span lang=qdx></span>IME 正式版计划作为一个 npm 包发布，除包含软键盘外，还将支持直接用物理键盘输入希顶字母（PUA 编码）。软键盘也将可以用鼠标点击。
+<p>在使用物理键盘输入时，按住 Shift 键输入聊天字母为大写的希顶字母，敲击一次 Shift 键后输入的第一个希顶字母将大写，敲击两次中写，敲击三次可以关闭或开启希顶字母输入模式。使用大写锁定键可以连续输入大写希顶字母。
+<p>另外，本人正在设计一门希顶语脚本编程语言 <span lang=qdx></span>Script（希脚语？），敬请期待。
+</p>
+</article><hr>
+<p>by <a href="https://wiki.xdi8.top/wiki/User:DGCK81LNN">DGCK81LNN</a> 2022–10–19</p>
+<p><a href="https://github.com/DGCK81LNN/xdi8-ime">源代码</a>
+<p>QQ: 3470524928</p>
+<p>希顶语字体 XEGOEPUAall 和希顶字母图腾图片取自<a href="https://wiki.xdi8.top/" target=_blank>希顶维基</a>。</p>
+</body>
+</html>
