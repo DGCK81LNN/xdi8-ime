@@ -15,6 +15,8 @@ url('https://wiki.xdi8.top/w/resources/assets/XEGOEPUAall%20Regular.ttf') format
 .xegoe { font-family: XEGOEPUAall, sans-serif }
 
 #xdi8kb-wrap {
+  max-width: 24rem;
+
   --color-text: black;
   --color-bg: #d0d3d9;
   --color-key: #fff;
@@ -32,7 +34,6 @@ url('https://wiki.xdi8.top/w/resources/assets/XEGOEPUAall%20Regular.ttf') format
 #xdi8kb {
   background-color: var(--color-bg);
   font: 1.5rem "XEGOEPUAall", sans-serif;
-  max-width: 24rem;
   color: var(--color-text);
 }
 #xdi8kb-wrap[data-theme="night"] {
@@ -743,6 +744,10 @@ out.onfocus = out.onclick = function () {
 <li><p>长按 Shift 键可显示并键入聊天字母为大写的希顶字母。（此功能在开发中的正式版本中将从软键盘中移除，只适用于物理键盘输入）。
 <li><p>目前暂未为 Symbol 键（<span lang=qdx></span>）添加功能。
 </p></li></ul>
+<h2>已知问题</h2>
+<ul>
+<li><p>在安卓系统下可能出现按不到字母键的问题，目前正在尝试解决。
+</p></li></ul>
 <h2><span lang=qdx></span>IME 正式版本前瞻</h2>
 <p><span lang=qdx></span>IME 正式版计划作为一个 npm 包发布，除包含软键盘外，还将支持直接用物理键盘输入希顶字母（PUA 编码）。软键盘也将可以用鼠标点击。
 <p>在使用物理键盘输入时，按住 Shift 键输入聊天字母为大写的希顶字母，敲击一次 Shift 键后输入的第一个希顶字母将大写，敲击两次中写，敲击三次可以关闭或开启希顶字母输入模式。使用大写锁定键可以连续输入大写希顶字母。
@@ -753,6 +758,6 @@ out.onfocus = out.onclick = function () {
 <p>QQ: 3470524928</p>
 <p>希顶语字体 XEGOEPUAall 和希顶字母图腾图片取自<a href="https://wiki.xdi8.top/" target=_blank>希顶维基</a>。</p>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<p id=busuanzi_container_page_pv style="display: none">本页面已被浏览 <span id=busuanzi_value_page_pv></span> 次。</p>
+<p><span id=busuanzi_container_page_pv style="display: none">本页面已被浏览 <span id=busuanzi_value_page_pv></span> 次。</span></p>
 </body>
 </html>
