@@ -516,19 +516,22 @@ function updateBalloon(rect, yOffset = 0) {
   $balloon.hidden = false
 }
 
-function onTouchStart(sx, sy, time) {
+function onTouchStart(cx, cy, time) {
   slideMoved = false
-  startX = sx
-  startY = sy
+  startX = cx
+  startY = cy
   swipeAlt = false
-  return onTouchUpdate(sx, sy, time)
+
+  // 若退格键已按下则停止之
+  bkspStop()
+
+  return onTouchUpdate(cx, cy, time)
 }
 
-function onTouchUpdate(sx, sy, time) {
+function onTouchUpdate(cx, cy, time) {
   vx = window.scrollX
   vy = window.scrollY
-  const x = sx - vx
-  const y = sy - vy
+
   const kbRect = $kb.getBoundingClientRect()
 
   let rect = $slide && $slide.getBoundingClientRect()
@@ -538,14 +541,14 @@ function onTouchUpdate(sx, sy, time) {
     !slideMoved && // 不能是在触发过滑键后
     shidinnLetterNoFromCA($slide.dataset.key, true) !== undefined && // 当前按键需要有替代字母
     // 未离开当前按键宽度太多
-    x >= rect.left - swipeAltMaxDeltaX &&
-    x < rect.right + swipeAltMaxDeltaX
+    cx >= rect.left - swipeAltMaxDeltaX &&
+    cx < rect.right + swipeAltMaxDeltaX
   ) {
-    swipeAlt = Math.abs(sy - startY) > swipeAltMinDeltaY
+    swipeAlt = Math.abs(cy - startY) > swipeAltMinDeltaY
     let dy = 0
     if (swipeAlt) {
       // 触发滑动 AltGr 时字符预览气泡随触点上下移动
-      dy = sy - startY
+      dy = cy - startY
       // 滑越远移动越慢
       if (dy >= 0) dy = Math.atan(dy / 30) * 30
       else dy = Math.atan(dy / 100) * 100
@@ -554,7 +557,7 @@ function onTouchUpdate(sx, sy, time) {
     return
   }
 
-  if (!isPointInRect(kbRect, x, y)) {
+  if (!isPointInRect(kbRect, cx, cy)) {
     // 滑出软键盘外
     // 若 Enter 已按下则取消之
     if (enterPressed) enterUp(true)
@@ -563,13 +566,14 @@ function onTouchUpdate(sx, sy, time) {
   }
 
   // 没有发生滑动，直接返回
-  if ($slide && isPointInRect(rect, x, y)) return
+  if ($slide && isPointInRect(rect, cx, cy)) return
 
   // 普通滑动
   const $slideNew = $slidables.find($key => {
+    if ($key === $slide) return
     if ($key.disabled) return
     rect = $key.getBoundingClientRect()
-    return isPointInRect(rect, x, y)
+    return isPointInRect(rect, cx, cy)
   })  
   if (!$slideNew) return
 
@@ -595,13 +599,12 @@ function onTouchCommit(time) {
   if (!$slide) return
 
   inputChar($slide.dataset.key)
-  const $slide_ = $slide
-  $slide = null
-
-  setTimeout(() => {
-    $slide_.classList.remove("pressed")
+  setTimeout(($slide) => {
+    $slide.classList.remove("pressed")
     updateBalloon()
-  }, keyDownTime + 100 - time)
+  }, keyDownTime + 100 - time, $slide)
+
+  $slide = null
 }
 
 function onTouchCancel() {
@@ -616,30 +619,46 @@ $kb.addEventListener("touchstart", ev => {
   Array.from(ev.changedTouches).forEach(touch => {
     if (touchId) onTouchCommit(ev.timeStamp)
     touchId = touch.identifier
-    onTouchStart(touch.screenX, touch.screenY, ev.timeStamp)
+    onTouchStart(touch.clientX, touch.clientY, ev.timeStamp)
   })
-
-  // 若退格键已按下则停止之
-  bkspStop()
 
   ev.preventDefault()
 }, { passive: false })
 
 $kb.addEventListener("touchmove", ev => {
-  const touch = Array.from(ev.changedTouches).find(touch => touch. identifier === touchId)
-  if (touch) onTouchUpdate(touch.screenX, touch.screenY, ev.timeStamp)
+  const touch = Array.from(ev.changedTouches).find(touch => touch.identifier === touchId)
+  if (touch) onTouchUpdate(touch.clientX, touch.clientY, ev.timeStamp)
 
   ev.preventDefault() 
 }, { passive: false })
 
 $kb.addEventListener("touchend", ev => {
-  const touch = Array.from(ev.changedTouches).find(touch => touch. identifier === touchId)
+  const touch = Array.from(ev.changedTouches).find(touch => touch.identifier === touchId)
   if (touch) onTouchCommit(ev.timeStamp)
 })
 
 $kb.addEventListener("touchcancel", ev => {
-  const touch = Array.from(ev.changedTouches).find(touch => touch. identifier === touchId)
+  const touch = Array.from(ev.changedTouches).find(touch => touch.identifier === touchId)
   if (touch) onTouchCancel()
+})
+
+$kb.addEventListener("mousedown", ev => {
+  if (touchId) onTouchCommit(ev.timeStamp)
+  touchId = mouseTouch
+  onTouchStart(ev.clientX, ev.clientY, ev.timeStamp)
+
+  ev.preventDefault()
+})
+
+document.addEventListener("mousemove", ev => {
+  if (mouseTouch === touchId) {
+    onTouchUpdate(touch.clientX, touch.clientY, ev.timeStamp)
+    ev.preventDefault()
+  }
+})
+
+document.addEventListener("mouseup", ev => {
+  if (mouseTouch === touchId) onTouchCommit(ev.timeStamp)
 })
 
 //#endregion
@@ -737,7 +756,7 @@ out.onfocus = out.onclick = function () {
 <article>
 <h2>说明</h2>
 <ul>
-<li><p>本原型版本仅支持触摸屏。
+<li><p><s>本原型版本仅支持触摸屏。</s>
 <li><p>本演示中的文本框会主动抑制系统软键盘的显示（已在 iOS 16.0 和安卓版 Chrome 中测试）。如果系统键盘仍然显示，欢迎向我反馈。
 <li><p>按住字母键向上或向下拖动来输入聊天字母为大写的希顶字母。
 <li><p>单击 Shift 键输入大写字母，双击输入中写字母，连点三次打开大写锁定。
@@ -746,15 +765,23 @@ out.onfocus = out.onclick = function () {
 </p></li></ul>
 <h2>已知问题</h2>
 <ul>
-<li><p>在安卓系统下可能出现按不到字母键的问题，目前正在尝试解决。
+<li><p>在安卓系统下按软键盘的 Shift 键可能导致系统键盘显示，目前正在尝试解决。
 </p></li></ul>
 <h2><span lang=qdx></span>IME 正式版本前瞻</h2>
-<p><span lang=qdx></span>IME 正式版计划作为一个 npm 包发布，除包含软键盘外，还将支持直接用物理键盘输入希顶字母（PUA 编码）。软键盘也将可以用鼠标点击。
+<p><span lang=qdx></span>IME 正式版计划作为一个 npm 包发布，除包含软键盘外，还将支持直接用物理键盘输入希顶字母（PUA 编码）。
 <p>在使用物理键盘输入时，按住 Shift 键输入聊天字母为大写的希顶字母，敲击一次 Shift 键后输入的第一个希顶字母将大写，敲击两次中写，敲击三次可以关闭或开启希顶字母输入模式。使用大写锁定键可以连续输入大写希顶字母。
 <p>另外，本人正在设计一门希顶语脚本编程语言 <span lang=qdx></span>Script（希脚语？），敬请期待。
 </p>
+<h2>更改日志</h2>
+<dl>
+<dt>2022–10–19
+<dd><li>本页面发布。</li>
+<dt>2022–10–20
+<dd><li>修复了在部分浏览器中触摸字母按键时判定错位的问题。</li>
+<dd><li>现在可以用鼠标点击软键盘。（实验性）</li>
+</dl>
 </article><hr>
-<p>by <a href="https://wiki.xdi8.top/wiki/User:DGCK81LNN">DGCK81LNN</a> 2022–10–19</p>
+<p>by <a href="https://wiki.xdi8.top/wiki/User:DGCK81LNN">DGCK81LNN</a></p>
 <p>QQ: 3470524928</p>
 <p>希顶语字体 XEGOEPUAall 和希顶字母图腾图片取自<a href="https://wiki.xdi8.top/" target=_blank>希顶维基</a>。</p>
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
