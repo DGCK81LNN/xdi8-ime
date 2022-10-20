@@ -424,6 +424,14 @@ $shift.addEventListener("touchend", ev => {
   onShiftUp(true, ev.timeStamp)
   ev.preventDefault()
 }, { passive: false })
+$shift.addEventListener("mousedown", ev => {
+  onShiftDown(true, ev.timeStamp)
+  ev.preventDefault()
+})
+$shift.addEventListener("mouseup", ev => {
+  onShiftUp(true, ev.timeStamp)
+  ev.preventDefault()
+})
 
 function updateSoftKb() {
   const cas = getCase()
@@ -683,6 +691,7 @@ function bkspTick() {
   bkspTickHandle = setTimeout(bkspTick, bkspRepeatInterv)
 }
 function bkspStop(cancel, time) {
+  if (bkspTickHandle === null) return
   clearInterval(bkspTickHandle)
   bkspTickHandle = null
   if (cancel) {
@@ -717,7 +726,7 @@ $bksp.addEventListener("mousedown", ev => {
 })
 
 document.addEventListener("mouseup", ev => {
-  if (bkspTickHandle !== null) bkspStop(false, ev.timeStamp)
+  bkspStop(false, ev.timeStamp)
 })
 
 let enterPressed = false
@@ -729,6 +738,7 @@ function enterDown(time) {
   enterDownTime = ev.timeStamp
 }
 function enterUp(cancel, time) {
+  if (!enterPressed) return
   enterPressed = false
   if (cancel) {
     $enter.classList.remove("pressed")
@@ -756,7 +766,7 @@ $enter.addEventListener("touchcancel", ev => {
 $enter.addEventListener("mousedown", ev => {
   enterDown(ev.timeStamp)
   ev.preventDefault()
-}, { passive: false })
+})
 
 $enter.addEventListener("mouseup", ev => {
   enterUp(false, ev.timeStamp)
