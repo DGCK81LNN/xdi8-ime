@@ -1,0 +1,1181 @@
+<!DOCTYPE HTML>
+<html lang="cmn-Hans">
+<head>
+<meta charset=UTF-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>Xdi8IME 软键盘原型（2号）演示</title>
+<link rel=canonical href="https://dgck81lnn.github.io/xdi8-ime/xdi8kbdproto2.html">
+<link rel=stylesheet href="https://dgck81lnn.github.io/bootstrap-lnn/dist/bootstrap-lnn.min.css">
+<style>
+@font-face {
+font-family: XEGOEPUAall;
+src: 
+url('https://wiki.xdi8.top/w/resources/assets/XEGOEPUAall%20Regular.ttf') format('truetype');
+}
+
+:lang(qdx),
+#out { font-family: XEGOEPUAall, sans-serif }
+
+#out {
+  font-size: 1rem;
+  height: 18rem;
+}
+</style>
+</head>
+<body class=m-2>
+<h1><span lang=qdx></span>IME 软键盘原型（2号）演示</h1>
+<div class="my-2">
+<textarea id=out class="form-control" placeholder="在此输入"></textarea>
+</div>
+<script>
+const _HTML = /*html*/ `\
+<div class="bar">
+  <div class="bar-brand">IME</div>
+  <button class="bar-btn bar-btn-switch">&#x1f310;&#xfe0e;</button>
+  <button class="bar-btn bar-btn-close">✕</button>
+</div>
+<div class="xdi8kbd" lang="qdx">
+  <div class="row">
+    <input type=hidden class="key-insertionmark">
+  </div>
+  <div class="row">
+    <input type=hidden class="key-insertionmark">
+  </div>
+  <div class="row">
+    <div class="halfpad"></div>
+    <input type=hidden class="key-insertionmark">
+    <div class="halfpad"></div>
+  </div>
+  <div class="row">
+    <div class="key-wrap key-fixed key-18">
+      <button class="key key-gray key-shift" data-state=0>
+        <svg class="key-icon key-icon-shift" viewBox="0 0 100 100" height="1em"><path d="M32,56V78q0,7,7,7h22q7,0,7,-7V56H90q5,0,0,-4L51,13Q50,12,49,13L10,52q-5,4,0,4Z" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="miter" /></svg>
+        <svg class="key-icon key-icon-shift-filled" viewBox="0 0 100 100" height="1em"><path d="M32,56V78q0,7,7,7h22q7,0,7,-7V56H90q5,0,0,-4L51,13Q50,12,49,13L10,52q-5,4,0,4Z" fill="currentColor" stroke="currentColor" stroke-width="7" /></svg>
+        <svg class="key-icon key-icon-shift-filled-locked" viewBox="0 0 100 100" height="1em"><path d="M32,48v10q0,6,6,6h26q6,0,6,-6V48H89q4,0,0,-4L51,10Q50,9,49,10L11,44q-4,4,0,4ZM64,77q6,0,6,6v4q0,6,-6,6H38q-6,0,-6,-6v-4q0,-6,6,-6z" fill="currentColor" stroke="currentColor" stroke-width="7" /></svg>
+      </button>
+    </div>
+    <div class="key-wrap key-fixed key-18" hidden>
+      <button class="key key-gray key-captsm key-symbolshift">
+        <div class="key-label"></div>
+      </button>
+    </div>
+    <div class="quarterpad"></div>
+    <input type=hidden class="key-insertionmark">
+    <div class="quarterpad"></div>
+    <div class="key-wrap key-fixed key-18" role=button>
+      <button class="key key-gray key-bksp">
+        <svg class="key-icon key-icon-bksp" viewBox="0 0 100 100" height="1em"><path d="M82 14q10 0 10 10v52q0 10-10 10h-37q-7 0-14-7l-21-23q-6-6 0-12l21-23q7-7 14-7z" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /><path d="M57 55l11.5 11.5a3.5355 3.5355 90 005-5l-11.5-11.5 11.5-11.5a3.5355 3.5355 90 00-5-5l-11.5 11.5-11.5-11.5a3.5355 3.5355 90 00-5 5l11.5 11.5-11.5 11.5a3.5355 3.5355 90 005 5z" fill="currentColor" /></svg>
+        <svg class="key-icon key-icon-bksp-filled" viewBox="0 0 100 100" height="1em"><path d="M82 14q10 0 10 10v52q0 10-10 10h-37q-7 0-14-7l-21-23q-6-6 0-12l21-23q7-7 14-7z" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" /><path d="M82 14q10 0 10 10v52q0 10-10 10h-37q-7 0-14-7l-21-23q-6-6 0-12l21-23q7-7 14-7zM57 55l11.5 11.5a3.5355 3.5355 90 005-5l-11.5-11.5 11.5-11.5a3.5355 3.5355 90 00-5-5l-11.5 11.5-11.5-11.5a3.5355 3.5355 90 00-5 5l11.5 11.5-11.5 11.5a3.5355 3.5355 90 005 5z" fill="currentColor" /></svg>
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="key-wrap key-fixed key-14">
+      <button class="key key-gray key-captsm key-symbol">
+        <div class="key-label"></div>
+      </button>
+    </div>
+    <div class="key-wrap" id=xdi8kbd-key-space data-key=" ">
+      <button class="key key-captsm key-space">
+        <div class="key-label"></div>
+      </button>
+    </div>
+    <div class="key-wrap key-fixed key-14">
+      <button class="key key-gray key-captsm key-enter">
+        <div class="key-label"></div>
+      </button>
+    </div>
+  </div>
+</div>
+<div role=presentation class="balloon" hidden></div
+>`
+
+const _CSS = /*css*/ `
+[hidden] {
+  display: none !important;
+}
+
+.xdi8kbd-wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  font-family: "XEGOEPUAall";
+  z-index: 1000;
+  user-select: none;
+
+  transition: visibility 0.8s, bottom 0.8s cubic-bezier(0.25, 1, 0, 1);
+}
+.xdi8kbd-wrap[hidden] {
+  display: revert !important;
+  visibility: hidden;
+  bottom: -18rem;
+}
+
+.xdi8kbd-wrap {
+  --color-text: black;
+  --color-bg: #d0d3d9;
+  --color-key: #fff;
+  --color-press: #aab0bb;
+  --color-shad: #87898d;
+  --color-ext: #7795ac;
+  --color-bar: #f0f0f1;
+  --color-action: #3478f6;
+}
+@media screen and (prefers-color-scheme: dark) {
+.xdi8kbd-wrap {
+  --color-text: white;
+  --color-bg: #6f6f6f;
+  --color-key: #9b9b9b;
+  --color-press: #797979;
+  --color-shad: #434343;
+  --color-ext: #bce;
+  --color-bar: #464748;
+  --color-action: #fff;
+}
+}
+/*
+.xdi8kbd-wrap[data-theme="glass"] {
+  --color-text: white;
+  --color-bg: #343434;
+  --color-key: #797979;
+  --color-press: #505050;
+  --color-shad: #1d1d1d;
+  --color-ext: #bce;
+  --color-bar: #343434;
+  background: center / contain no-repeat url("https://wiki.xdi8.top/w/images/e/ed/Xdi8_Aho.png");
+}*/
+
+.bar {
+  position: relative;
+  padding: 0.5rem 0;
+  background-color: var(--color-bar, #eee);
+  border-top: 1px solid var(--color-bg);
+}
+.bar-brand {
+  text-align: center;
+  color: var(--color-press);
+}
+.bar-btn {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+
+  padding: 0 0.5rem;
+  border: none;
+  color: var(--color-action);
+  font: inherit;
+  font-weight: bold;
+
+  background-color: transparent;
+}
+.bar-btn:active {
+  opacity: 0.5;
+}
+.bar-btn-switch {
+  left: 0;
+}
+.bar-btn-close {
+  right: 0;
+}
+
+.xdi8kbd {
+  background-color: var(--color-bg);
+  /*max-width: 24rem;*/
+  color: var(--color-text);
+  padding-bottom: 16px;
+  font-size: 1rem;
+}
+.xdi8kbd-wrap[data-theme="glass"] .xdi8kbd {
+  opacity: 87%;
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+}
+
+.row {
+  display: flex;
+}
+
+.key-wrap {
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+}
+.key-wrap:not(.key-fixed) { flex: 1 }
+.key-18 { width: 12.5% }
+.key-14 { width: 25% }
+.halfpad { width: 5% }
+.quarterpad { width: 2.5% }
+
+.key {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0.3125rem 0.1875rem;
+  height: 2.25rem;
+  
+  padding: 0;
+  border: none;
+  color: inherit;
+  font-size: 1.5rem;
+  font-family: inherit;
+
+  background-color: var(--color-key);
+  border-radius: 0.3125rem;
+  box-shadow: 0 1px var(--color-shad);
+  position: relative;
+}
+.key.pressed { background-color: var(--color-press) }
+.key-gray { background-color: var(--color-press) }
+.key-gray.pressed { background-color: var(--color-key) }
+/* Shift 键大写或中写状态 */
+.key-shift:not([data-state="0"]) {
+  background-color: #fff;
+  color: #000;
+}
+.key-shift:not([data-state="0"]).ext { color: #7795ac }
+
+.key-label,
+.key-icon {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  margin: auto;
+}
+.key-label {
+  width: fit-content;
+  height: fit-content;
+}
+.key-shift .key-icon,
+.key-bksp .key-icon { visibility: hidden }
+.key-shift[data-state="0"] .key-icon-shift,
+.key-shift[data-state="1"] .key-icon-shift-filled,
+.key-shift[data-state="2"] .key-icon-shift-filled,
+.key-shift[data-state="3"] .key-icon-shift-filled-locked,
+.key-bksp:not(.pressed) .key-icon-bksp,
+.key-bksp.pressed .key-icon-bksp-filled { visibility: inherit }
+
+.xdi8kbd-wrap[data-funny-shift] .key-shift .key-icon { transition: transform 150ms }
+.key-shift[data-state="2"] .key-icon { transform: rotate(180deg) }
+.key-shift[data-state="3"] .key-icon { transform: rotate(360deg) }
+
+/* 希扩字母，以及更多字母状态下的 Shift 键，显示为蓝色 */
+.key.ext { color: var(--color-ext) }
+/* 禁用按键 */
+.key:disabled {
+  color: var(--color-bg);
+  /*text-shadow: 0 -1px #d0d3d9;*/
+}
+
+/* 使不同写体的字母看起来都垂直居中 */
+.xdi8kbd[data-layout="0"] .key-printable .key-label { transform: translateY(-0.0625em) }
+.xdi8kbd[data-layout="1"] .key-printable .key-label { transform: translateY(0.0625em) }
+.xdi8kbd[data-layout="2"] .key-printable .key-label { transform: translateY(-0.1875em) }
+
+/* 空格键上的字 */
+.key-captsm { font-size: 1rem }
+
+/* 字符预览 */
+.balloon {
+  position: absolute;
+  font: 2.25rem "XEGOEPUAall";
+  line-height: 3rem;
+  min-width: 3rem;
+  padding: 0.375rem 0;
+  text-align: center;
+  color: var(--color-text);
+  background-color: var(--color-key);
+  border-radius: 0.46875rem;
+  box-shadow: /*0 1px #87898d,*/ 0 4px 16px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, calc(-100% - 1rem));
+}
+`
+
+class EventEmitter {
+  constructor() {
+    /** @type {{ type: string, handler: Function }[]} */
+    this.eventListeners = []
+  }
+
+  /**
+   * @param {string} type
+   * @param {Function} handler
+   */
+  on(type, handler) {
+    this.eventListeners.push({ type, handler })
+  }
+
+  /**
+   * @param {string} type
+   * @param {...any} args
+   */
+  emit(type, ...args) {
+    for (const listener of this.eventListeners) {
+      if (listener.type === type) listener.handler.apply(this, args)
+    }
+  }
+}
+
+const minVisualFeedbackDur = 100
+const altgrMaxDX = 20
+const altgrMinDY = 30
+const halfPi = Math.PI / 2
+const altgrDownMaxYOffset = 50
+const altgrUpMaxYOffset = 150
+const tapMaxDur = 150
+const consecTapMaxInterv = 250
+const bkspRepeatDelay = 500
+const bkspRepeatInterv = 100
+
+/**
+ * @param {{ left: number, top:number, right: number, bottom: number }} rect
+ * @param {number} x
+ * @param {number} y
+ */
+function isPointInRect(rect, x, y) {
+  return x >= rect.left && x < rect.right && y >= rect.top && y < rect.bottom
+}
+
+/**
+ * Struct specifying the glyphs that a certain printable key may print under a certain layout.
+ * @interface KeyDefinition
+ */
+/** @prop {string} default */
+/** @prop {?string | string[]} altgr */
+
+/**
+ * @param {boolean} showExtLetters
+ * @returns {KeyDefinition[][][]}
+ */
+function getLtrLayouts(showExtLetters) {
+  function getShidinnLetter(i, cas) {
+    return String.fromCharCode(0xe020 + i + ((i >> 4) << 5) + (cas << 4))
+  }
+
+  const chatAlphabet =
+    "!bpmwjqxynzDsrHNldtgkh45vF7BcfuaoeEAYL62T83V1i" +
+    (showExtLetters ? "X9WPJURZO0KQGISMC" : "")
+
+  const lettersCA = [
+    [..."1234567890"],
+    [..."qwertyuiop"],
+    [..."asdfghjkl"],
+    [..."zxcvbnm"],
+  ]
+  const layoutCases = [1, 0, 2]
+  const layouts = layoutCases.map(cas => lettersCA.map(() => []))
+
+  lettersCA.forEach((line, lineIndex) => {
+    line.map((letr, letrIndex) => {
+      const no = chatAlphabet.indexOf(letr)
+      if (no === -1) return
+
+      const altNo = chatAlphabet.indexOf(
+        letr === "1" ? "!" : letr.toUpperCase()
+      )
+      const hasAlt = altNo !== -1 && altNo !== no
+
+      layoutCases.forEach((cas, layoutIndex) => {
+        const def = { default: getShidinnLetter(no, cas) }
+        if (hasAlt) def.altgr = getShidinnLetter(altNo, cas)
+        layouts[layoutIndex][lineIndex][letrIndex] = def
+      })
+    })
+  })
+
+  return layouts
+}
+
+const symbolLayout = [
+  "1234567890",
+  [..."\u27e6\u27e7:;()","*×",{default:"$",altgr:"¥"},..."&@"],
+  ["-—","/÷",..."<>~“”\"·"],
+  [...".,?!",{default:"’",altgr:"‘",toggleSymbol:true}],
+].map(l => Array.from(l, c => typeof c === "string" ? { default: c[0], altgr: c[1] } : c))
+const symbolLayout2 = [
+  [..."\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009",{default:"\ue00a",altgr:"\ue00b"}],
+  [..."[]{}#%^","+−",..."=\ue00c"],
+  [..."\\|\u2039\u203a\u2662\xab\xbb",{default:"\u21e7",altgr:"\u21e9"},"`"],
+  [...".,?!",{default:"'",toggleSymbol:true}],
+].map(l => Array.from(l, c => typeof c === "string" ? { default: c[0], altgr: c[1] } : c))
+
+/** @typedef {0 | 1 | 2 | 3} CaseState */
+
+class Keyboard extends EventEmitter {
+  /** @type {Document} */
+  $doc = null
+  /** @type {?Document} */
+  $targetDoc = null
+  disposed = false
+
+  /**
+   * @param {Document} [$doc]
+   */
+  constructor($doc) {
+    super()
+
+    $doc = $doc || document
+    this.$doc = $doc
+    this.$targetDoc = $doc
+
+    this.$container = $doc.createElement("div")
+    this.$container.innerHTML = _HTML
+    this.$container.className = "xdi8kbd-wrap"
+    this.$container.hidden = true
+    this.$container.addEventListener("touchstart", ev => {
+      ev.preventDefault()
+    })
+    this.$container.addEventListener("touchmove", ev => {
+      ev.preventDefault()
+    })
+    this.$container.addEventListener("mousedown", ev => {
+      ev.preventDefault()
+    })
+
+    this.$body = this.$container.querySelector(".xdi8kbd")
+    this.printables = new PrintableKeyArray(this)
+    this.shift = new ShiftKey(this.$container.querySelector(".key-shift"), this)
+    this.bksp = new BkspKey(this.$container.querySelector(".key-bksp"), this)
+    this.enter = new EnterKey(this.$container.querySelector(".key-enter"), this)
+    this.symbol = new SymbolKey(this.$container.querySelector(".key-symbol"), this)
+    this.symbolShift = new SymbolShiftKey(this.$container.querySelector(".key-symbolshift"), this)
+
+    this.layouts = getLtrLayouts()
+    this.symbolLayouts = [symbolLayout, symbolLayout2]
+
+    this.closeBtn = new BarButton(this.$container.querySelector(".bar-btn-close"), this)
+    this.closeBtn.press = () => {
+      this.$parent.ownerDocument.activeElement?.blur()
+    }
+    this.$parent = document.createElement("xdi8ime-keyboard")
+    document.documentElement.appendChild(this.$parent)
+    this.$parent.innerHTML = /*html*/ `\
+<style>
+xdi8ime-keyboard {
+  display: block;
+  transition: height 0.8s cubic-bezier(0.25, 1, 0, 1);
+}
+xdi8ime-keyboard[data-show] {
+  transition: none;
+}
+</style>`
+
+    this.$style = $doc.createElement("style")
+    this.$style.textContent = _CSS
+
+    this.$shadow = this.$parent.attachShadow({ mode: "open" })
+    this.$shadow.appendChild(this.$style)
+    this.$shadow.appendChild(this.$container)
+    //this.update()
+  }
+
+  show() {
+    this.$parent.setAttribute("data-show", "")
+    this.$container.hidden = false
+    this.emit("reset")
+    this.symbols = false
+    this.layoutIndex = 0
+    this.update()
+  }
+
+  hide() {
+    this.$parent.removeAttribute("data-show")
+    this.$container.hidden = true
+    this.$parent.style.height = "0"
+  }
+
+  /** @type {Parameters<typeof Node.prototype.addEventListener>[]} */
+  docEventListeners = []
+  /**
+   * @param {Parameters<typeof Node.prototype.addEventListener>} args
+   */
+  registerDocumentEventListener(...args) {
+    this.docEventListeners.push(args)
+    this.$doc.addEventListener(...args)
+  }
+
+  dispose() {
+    if (this.disposed) return
+    this.$parent.remove()
+    this.docEventListeners.forEach(args => {
+      this.$doc.removeEventListener(...args)
+    })
+    this.docEventListeners.length = 0
+    this.injected = false
+    this.disposed = true
+    Object.freeze(this)
+  }
+
+  symbols = false
+  layoutIndex = 0
+
+  update() {
+    const layouts = this.symbols ? this.symbolLayouts : this.layouts
+    const layout = layouts[this.layoutIndex]
+
+    this.printables.update(layout)
+    this.$body.dataset.layout = `${this.symbols? "symbol" : ""}${this.layoutIndex}`
+    this.$parent.style.height = `${this.$container.getBoundingClientRect().height}px`
+  }
+
+  execute(action, arg) {
+    this.$targetDoc?.execCommand(action, false, arg)
+  }
+}
+
+class Key {
+  constructor($wrap, $body) {
+    this.$wrap = $wrap
+    this.$body = $body
+  }
+
+  show() {
+    this.$wrap.hidden = false
+  }
+  hide() {
+    this.$wrap.hidden = true
+  }
+
+  getRect() {
+    return this.$wrap.getBoundingClientRect()
+  }
+
+  _unpressHandle = null
+  press() {
+    this._pressTime = Date.now()
+    this.$body.classList.add("pressed")
+    clearTimeout(this._unpressHandle)
+  }
+  unpress(instant) {
+    const dt = instant ? 0 : this._pressTime + minVisualFeedbackDur - Date.now()
+    if (dt > 0)
+      setTimeout(() => void this.$body.classList.remove("pressed"), dt)
+    else this.$body.classList.remove("pressed")
+  }
+}
+
+class DynamicKey extends Key {
+  /**
+   * @param {Node} $mark Any node from the document that the key will be injected into.
+   */
+  constructor($mark) {
+    const $doc = $mark.ownerDocument
+    super($doc.createElement("div"), $doc.createElement("button"))
+
+    this.$wrap.className = "key-wrap"
+    this.$body.className = "key"
+    this.$body.Key = this
+    this.$wrap.appendChild(this.$body)
+  }
+}
+
+/**
+ * A key on the virtual keyboard that can be used to input a glyph.
+ */
+class PrintableKey extends DynamicKey {
+  /**
+   * @param {ChildNode} $mark
+   */
+  constructor($mark) {
+    super($mark)
+
+    this.$body.classList.add("key-printable")
+    this.$label = this.$body.ownerDocument.createElement("div")
+    this.$label.className = "key-label"
+    this.$body.appendChild(this.$label)
+
+    $mark.parentNode.insertBefore(this.$wrap, $mark)
+  }
+
+  def = null
+
+  /**
+   * @param {?KeyDefinition} def
+   */
+  update(def) {
+    this.def = def
+    if (!def) {
+      this.hide()
+      return
+    }
+    this.show()
+    this.$label.textContent = def.default
+  }
+}
+
+/** A faux touch identifier for mouse events. */
+const mouse = Symbol("mouse")
+
+/**
+ * A 2-dimensional array of `PrintableKey`s on the virtual keyboard.
+ */
+class PrintableKeyArray {
+  /**
+   * @param {Keyboard} kbd
+   */
+  constructor(kbd) {
+    this.kbd = kbd
+    this.$marks = [...kbd.$container.querySelectorAll(".key-insertionmark")]
+    this.rows = this.$marks.map($mark => [])
+    this.space = new SpaceKey(kbd.$container.querySelector(".key-space"))
+    this.slidables = [this.space]
+
+    this.balloon = new Balloon(kbd.$container.querySelector(".balloon"), this)
+
+    kbd.$body.addEventListener("touchstart", ev => {
+      for (const touch of ev.changedTouches)
+        this.down(touch.identifier, touch.clientX, touch.clientY)
+      //ev.preventDefault()
+    }, { capture: true, passive: false })
+    kbd.$body.addEventListener("touchmove", ev => {
+      for (const touch of ev.changedTouches)
+        this.move(touch.identifier, touch.clientX, touch.clientY)
+      //ev.preventDefault()
+    }, { capture: true, passive: false })
+    kbd.$body.addEventListener("touchend", ev => {
+      for (const touch of ev.changedTouches)
+        this.up(touch.identifier)
+    }, { capture: true, passive: false })
+    kbd.$body.addEventListener("touchcancel", ev => {
+      for (const touch of ev.changedTouches)
+        this.cancel(touch.identifier)
+    }, true)
+    kbd.$body.addEventListener("mousedown", ev => {
+      this.down(mouse, ev.clientX, ev.clientY)
+      //ev.preventDefault()
+    }, true)
+    kbd.registerDocumentEventListener("mousemove", ev => {
+      this.move(mouse, ev.clientX, ev.clientY)
+    }, true)
+    kbd.registerDocumentEventListener("mouseup", ev => {
+      this.up(mouse)
+    }, true)
+
+    kbd.on("bkspdown", () => {
+      this.cancel(this.touchId)
+    })
+    kbd.on("reset", () => {
+      this.cancel(this.touchId)
+    })
+  }
+
+  down(id, x, y) {
+    if (this.touchId) this.up(this.touchId)
+    this.touchId = id
+    this.slid = false
+    this.startY = y
+    this.altgr = false
+    this.kbd.emit("touchstart")
+    return this.move(id, x, y)
+  }
+  move(id, x, y) {
+    if (id !== this.touchId) return
+
+    const kbRect = this.kbd.$body.getBoundingClientRect()
+
+    let rect = this.activeKey?.getRect()
+    if (
+      typeof this.activeKey?.def.altgr === "string" &&
+      !this.slid &&
+      x >= rect.left - altgrMaxDX &&
+      x < rect.right + altgrMaxDX
+    ) {
+      const dy = y - this.startY
+      const altgr = Math.abs(dy) > altgrMinDY
+      this.altgr = altgr
+      let yOffset = 0
+      if (altgr) {
+        const k = (dy > 0 ? altgrDownMaxYOffset : altgrUpMaxYOffset) / halfPi
+        yOffset = Math.atan(dy / k) * k
+      }
+      this.balloon.update(rect, yOffset)
+      return
+    }
+
+    if (!isPointInRect(kbRect, x, y)) {
+      this.kbd.emit("touchout")
+      return this.cancel(id)
+    }
+
+    if (rect && isPointInRect(rect, x, y)) return
+
+    const newActiveKey = this.slidables.find(key => {
+      if (key === this.activeKey) return
+      rect = key.getRect()
+      return isPointInRect(rect, x, y)
+    })
+    if (!newActiveKey) return
+
+    if (this.activeKey) {
+      this.activeKey.unpress(true)
+      this.slid = true
+      this.altgr = false
+    }
+    newActiveKey.press()
+    this.activeKey = newActiveKey
+    this.balloon.update()
+    this.kbd.emit("printablekeytouch")
+  }
+  up(id) {
+    if (id !== this.touchId) return
+    this.touchId = null
+    if (this.activeKey) {
+      const def = this.activeKey.def
+      const char = this.altgr ? def.altgr : def.default
+      this.kbd.execute("insertText", char)
+      this.kbd.emit("printablekeypress", this.activeKey, this.altgr)
+
+      this.activeKey.unpress()
+      this.balloon.hide()
+      this.activeKey = null
+    }
+  }
+  cancel(id) {
+    if (id !== this.touchId) return
+    this.touchId = null
+    if (this.activeKey) {
+      this.activeKey.unpress(true)
+      this.activeKey = null
+      this.balloon.hide(true)
+    }
+  }
+
+  /**
+   * @param {KeyDefinition[][]} layout
+   */
+  update(layout) {
+    this.slidables.length = 0
+    this.slidables.push(this.space)
+
+    this.rows.forEach((row, rowIndex) => {
+      const rowDef = layout[rowIndex]
+      while (row.length < rowDef.length)
+        row.push(new PrintableKey(this.$marks[rowIndex]))
+      row.forEach((key, keyIndex) => {
+        if (keyIndex < rowDef.length) this.slidables.push(key)
+        key.update(rowDef[keyIndex])
+      })
+    })
+  }
+}
+
+class Balloon {
+  /**
+   * @param {HTMLElement} $body
+   * @param {PrintableKeyArray} pka
+   */
+  constructor($body, pka) {
+    /** @type {HTMLElement} */
+    this.$body = $body
+    /** @type {PrintableKeyArray} */
+    this.pka = pka
+  }
+
+  shown = false
+  /** @type {?number} */
+  _hideHandle = null
+  show() {
+    this.shown = true
+    this._showTime = Date.now()
+    this.$body.hidden = false
+    clearTimeout(this._hideHandle)
+  }
+  hide(instant) {
+    this.shown = false
+    const dt = instant ? 0 : this._showTime + minVisualFeedbackDur - Date.now()
+    if (dt > 0)
+      this._hideHandle = setTimeout(() => void(this.$body.hidden = true), dt)
+    else this.$body.hidden = true
+  }
+
+  update(rect, yOffset = 0) {
+    if (!(this.pka.activeKey instanceof PrintableKey)) {
+      this.hide()
+      return
+    }
+
+    if (!rect) rect = this.pka.activeKey.getRect()
+    const def = this.pka.activeKey.def
+    const kbRect = this.pka.kbd.$container.getBoundingClientRect()
+
+    this.$body.textContent = this.pka.altgr ? def.altgr : def.default
+    this.$body.style.left = `${rect.left + rect.width / 2 - kbRect.left}px`
+    this.$body.style.top = `${rect.top - kbRect.top + yOffset}px`
+    if (!this.shown) this.show()
+  }
+}
+
+class PreconstructedKey extends Key {
+  constructor($body) {
+    super($body.parentElement, $body)
+    $body.Key = this
+  }
+}
+
+class SpaceKey extends PreconstructedKey {
+  def = { default: " " }
+}
+
+class SingletonKey extends PreconstructedKey {
+  /**
+   * @param {HTMLElement} $body
+   * @param {Keyboard} kbd
+   */
+  constructor($body, kbd) {
+    super($body)
+    /** @type {Keyboard} */
+    this.kbd = kbd
+
+    this.$wrap.addEventListener("touchstart", ev => {
+      //ev.preventDefault()
+      if (this.pressed) return
+      this.down(ev)
+    }, { passive: false })
+    this.$wrap.addEventListener("touchend", ev => {
+      if (!this.pressed) return
+      this.up(ev)
+    }, { passive: false })
+    this.$wrap.addEventListener("touchcancel", ev => {
+      if (!this.pressed) return
+      this.cancel(ev)
+    })
+    this.$wrap.addEventListener("mousedown", ev => {
+      if (this.pressed) return
+      this.down(ev)
+      //ev.preventDefault()
+    })
+    kbd.registerDocumentEventListener("mouseup", ev => {
+      if (!this.pressed) return
+      this.up(ev)
+      //ev.preventDefault()
+    })
+
+    kbd.on("reset", () => {
+      this.reset()
+    })
+  }
+
+  pressed = false
+
+  down() {
+    this.pressed = true
+    this.press()
+  }
+  up() {
+    this.pressed = false
+    this.unpress()
+  }
+  cancel() {
+    this.pressed = false
+    this.unpress(true)
+  }
+  reset() {
+    this.pressed = false
+    this.unpress(true)
+  }
+}
+
+class ShiftKey extends SingletonKey {
+  /**
+   * @param {HTMLElement} $body
+   * @param {Keyboard} kbd
+   */
+  constructor($body, kbd) {
+    super($body, kbd)
+
+    kbd.on("printablekeypress", () => {
+      if (kbd.symbols) return
+      this.otherKeyPressed = true
+      if (this.state !== 3 && !this.pressed) {
+        this.state = 0
+        this.update()
+      }
+    })
+  }
+
+  state = 0
+  pressed = false
+  downTime = -Infinity
+  upTime = -Infinity
+  otherKeyPressed = false
+  returning = false
+
+  getState() {
+    if (this.returning) return 1
+    return this.state
+  }
+
+  down(ev) {
+    this.pressed = true
+    this.otherKeyPressed = false
+    
+    const time = ev.timeStamp
+
+    if (
+      this.state !== 3 &&
+      this.upTime - this.downTime <= tapMaxDur &&
+      time - this.upTime <= consecTapMaxInterv
+    ) {
+      this.state = this.state === 2 ? 3 : 2
+    } else if (this.state === 0) {
+      this.state = 1
+    } else {
+      this.returning = true
+    }
+
+    this.downTime = time
+    this.update()
+  }
+  up(ev) {
+    this.pressed = false
+
+    const time = ev.timeStamp
+
+    if (this.returning || this.otherKeyPressed) {
+      this.returning = false
+      this.state = 0
+    }
+
+    this.upTime = time
+    this.update()
+  }
+  cancel() {
+    this.pressed = false
+
+    this.downTime = -Infinity
+    this.update()
+  }
+  reset() {
+    super.reset()
+    this.state = 0
+    this.downTime = -Infinity
+    this.upTime = -Infinity
+    this.returning = false
+    this.$body.dataset.state = 0
+  }
+
+  update() {
+    const state = this.getState()
+    this.$body.dataset.state = state
+    this.kbd.layoutIndex = state === 3 ? 1 : state
+    this.kbd.update()
+  }
+}
+
+class BkspKey extends SingletonKey {
+  /**
+   * @param {HTMLElement} $body
+   * @param {Keyboard} kbd
+   */
+  constructor($body, kbd) {
+    super($body, kbd)
+
+    kbd.on("touchstart", () => {
+      this.cancel()
+    })
+  }
+
+  tick() {
+    this.kbd.execute("delete")
+    this.tickHandle = setTimeout(() => this.tick(), bkspRepeatInterv)
+  }
+
+  down(ev) {
+    super.down()
+    this.kbd.emit("bkspdown")
+    this.kbd.execute("delete")
+    this.tickHandle = setTimeout(() => this.tick(), bkspRepeatDelay)
+  }
+  up() {
+    super.up()
+    clearTimeout(this.tickHandle)
+  }
+  cancel() {
+    super.cancel()
+    clearTimeout(this.tickHandle)
+  }
+}
+
+class EnterKey extends SingletonKey {
+  /**
+   * @param {HTMLElement} $body
+   * @param {Keyboard} kbd
+   */
+  constructor($body, kbd) {
+    super($body, kbd)
+
+    kbd.on("touchout", () => {
+      this.cancel()
+    })
+    kbd.on("printablekeytouch", () => {
+      this.cancel()
+    })
+  }
+
+  up() {
+    super.up()
+    this.kbd.execute("insertText", "\n")
+    this.kbd.emit("enterpress")
+  }
+}
+
+class SymbolKey extends SingletonKey {
+  static offText = ""
+  static onText = ""
+
+  constructor($body, kbd) {
+    super($body, kbd)
+
+    this.$label = this.$body.querySelector(".key-label")
+    this.$label.textContent = this.constructor.offText
+
+    kbd.on("printablekeypress", (key) => {
+      if (!this.kbd.symbols) return
+      if (
+        key.def?.toggleSymbol ||
+        key instanceof SpaceKey && this.otherKeyPressed
+      )
+        this.toggle()
+      else this.otherKeyPressed = true
+    })
+    kbd.on("enterpress", () => {
+      if (this.kbd.symbols && this.otherKeyPressed) this.toggle()
+    })
+  }
+
+  otherKeyPressed = false
+
+  down() {
+    this.otherKeyPressed = false
+    this.toggle()
+  }
+  up() {}
+  cancel() {}
+  reset() {
+    this.kbd.symbolShift.hide()
+    this.kbd.shift.show()
+    this.$label.textContent = this.constructor.offText
+  }
+
+  toggle() {
+    this.kbd.symbols = !this.kbd.symbols
+    this.kbd.layoutIndex = 0
+    this.kbd.emit("reset")
+    if (this.kbd.symbols) {
+      this.kbd.shift.hide()
+      this.kbd.symbolShift.show()
+      this.$label.textContent = this.constructor.onText
+    }
+    this.kbd.update()
+  }
+}
+
+class SymbolShiftKey extends SingletonKey {
+  static offText = "#+="
+  static onText = "123"
+
+  constructor($body, kbd) {
+    super($body, kbd)
+
+    this.$label = this.$body.querySelector(".key-label")
+    this.$label.textContent = this.constructor.offText
+  }
+
+  down() {
+    this.toggle()
+  }
+  up() {}
+  cancel() {}
+  reset() {
+    this.$label.textContent = this.constructor.offText
+  }
+
+  toggle() {
+    this.kbd.layoutIndex = +!this.kbd.layoutIndex
+    this.kbd.update()
+    this.$label.textContent = this.kbd.layoutIndex ? this.constructor.onText : this.constructor.offText
+  }
+}
+
+class BarButton {
+  pressed = false
+  /**
+   * @param {HTMLElement} $body
+   * @param {Keyboard} kbd
+   */
+  constructor($body, kbd) {
+    this.$body = $body
+    this.kbd = kbd
+    $body.addEventListener("touchstart", ev => {
+      this.pressed = true
+    })
+    $body.addEventListener("touchend", ev => {
+      if (this.pressed) this.press()
+      this.pressed = false
+    })
+    $body.addEventListener("mousedown", ev => {
+      this.pressed = true
+    })
+    $body.addEventListener("mouseup", ev => {
+      if (this.pressed) this.press()
+      this.pressed = false
+    })
+    kbd.registerDocumentEventListener("mouseup", () => {
+      this.pressed = false
+    })
+  }
+
+  press() {}
+}
+
+const k = new Keyboard()
+
+const $out = document.getElementById("out")
+let working = false
+$out.onfocus = $out.onclick = function () {
+  if (this.readOnly) return
+  working = true
+  this.blur()
+  this.readOnly = true
+  this.focus()
+  setTimeout(() => {
+    this.readOnly = false
+    k.show()
+    this.scrollIntoView({ behavior: "smooth" })
+    working = false
+  }, 0)
+}
+$out.onblur = function () {
+  if (working) return
+  k.hide()
+}
+</script>
+
+<article>
+<h2>说明</h2>
+<ul>
+<li><p>建议在手机上使用此软键盘。
+<li><p>按住字母键向上或向下拖动来输入聊天字母为大写的希顶字母。
+<li><p>单击 Shift 键输入大写字母，双击输入中写字母，连点三次打开大写锁定。
+</p></li></ul><!--
+<h2>已知问题</h2>
+<ul>
+<li><p>
+</p></li></ul>
+<h2><span lang=qdx></span>IME 正式版本前瞻</h2>
+<p><span lang=qdx></span>IME 正式版计划作为一个 npm 包发布，除包含软键盘外，还将支持直接用物理键盘输入希顶字母（PUA 编码）。
+<p>在使用物理键盘输入时，按住 Shift 键输入聊天字母为大写的希顶字母，敲击一次 Shift 键后输入的第一个希顶字母将大写，敲击两次中写，敲击三次可以关闭或开启希顶字母输入模式。使用大写锁定键可以连续输入大写希顶字母。
+<p>另外，本人正在设计一门希顶语脚本编程语言 <span lang=qdx></span>Script（希脚语？），敬请期待。
+</p>-->
+<h2>更改日志</h2>
+<dl>
+<dt>2022–10–19
+<dd><li><a href="https://dgck81lnn.github.io/xdi8-ime/xdi8kbdproto.html">原型机 1 号</a>发布。</li>
+<dt>2022–11-06
+<dd><li>本页面发布。</li>
+</dl>
+</article><hr>
+<p>by <a href="https://wiki.xdi8.top/wiki/User:DGCK81LNN">DGCK81LNN</a></p>
+<p>若您发现 bug，欢迎向我反馈。QQ: 3470524928</p>
+<p>希顶语字体 XEGOEPUAall 和希顶字母图腾图片取自<a href="https://wiki.xdi8.top/" target=_blank>希顶维基</a>。</p>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<p><span id=busuanzi_container_page_pv style="display: none">本页面已被浏览 <span id=busuanzi_value_page_pv></span> 次。</span></p>
+</body>
+</html>
