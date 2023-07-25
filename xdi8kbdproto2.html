@@ -92,6 +92,10 @@ const _HTML = /*html*/ `\
 >`
 
 const _CSS = /*css*/ `
+:host {
+  display: block;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -287,6 +291,10 @@ const _CSS = /*css*/ `
   box-shadow: /*0 1px #87898d,*/ 0 4px 16px rgba(0, 0, 0, 0.3);
   transform: translate(-50%, calc(-100% - 1rem));
 }
+
+.xdi8kbd-wrap[hidden] ~ .xdi8kbd-pad {
+  transition: height 0.8s cubic-bezier(0.25, 1, 0, 1);
+}
 `
 
 class EventEmitter {
@@ -447,28 +455,22 @@ class Keyboard extends EventEmitter {
     }
     this.$parent = document.createElement("xdi8ime-keyboard")
     document.documentElement.appendChild(this.$parent)
-    this.$parent.innerHTML = /*html*/ `\
-<style>
-xdi8ime-keyboard {
-  display: block;
-  transition: height 0.8s cubic-bezier(0.25, 1, 0, 1);
-}
-xdi8ime-keyboard[data-show] {
-  transition: none;
-}
-</style>`
 
     this.$style = $doc.createElement("style")
     this.$style.textContent = _CSS
 
+    this.$padding = $doc.createElement("div")
+    this.$padding.className = "xdi8kbd-pad"
+
     this.$shadow = this.$parent.attachShadow({ mode: "open" })
     this.$shadow.appendChild(this.$style)
     this.$shadow.appendChild(this.$container)
+    // $padding should follow $container for convenience of css
+    this.$shadow.appendChild(this.$padding)
     //this.update()
   }
 
   show() {
-    this.$parent.setAttribute("data-show", "")
     this.$container.hidden = false
     this.emit("reset")
     this.symbols = false
@@ -477,9 +479,8 @@ xdi8ime-keyboard[data-show] {
   }
 
   hide() {
-    this.$parent.removeAttribute("data-show")
     this.$container.hidden = true
-    this.$parent.style.height = "0"
+    this.$padding.style.height = "0"
   }
 
   /** @type {Parameters<typeof Node.prototype.addEventListener>[]} */
@@ -513,7 +514,7 @@ xdi8ime-keyboard[data-show] {
 
     this.printables.update(layout)
     this.$body.dataset.layout = `${this.symbols? "symbol" : ""}${this.layoutIndex}`
-    this.$parent.style.height = `${this.$container.getBoundingClientRect().height}px`
+    this.$padding.style.height = `${this.$container.getBoundingClientRect().height}px`
   }
 
   execute(action, arg) {
