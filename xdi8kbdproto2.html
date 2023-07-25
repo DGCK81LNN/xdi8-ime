@@ -451,7 +451,7 @@ class Keyboard extends EventEmitter {
 
     this.closeBtn = new BarButton(this.$container.querySelector(".bar-btn-close"), this)
     this.closeBtn.press = () => {
-      this.$parent.ownerDocument.activeElement?.blur()
+      this.$doc.activeElement?.blur()
     }
     this.$parent = document.createElement("xdi8ime-keyboard")
     document.documentElement.appendChild(this.$parent)
@@ -1154,6 +1154,7 @@ $out.onblur = function () {
 <h2>说明</h2>
 <ul>
 <li><p>建议在手机上使用此软键盘。
+<li><p>本演示中的文本框会主动抑制系统软键盘的显示（已在 iOS 16 和安卓版 Chrome 中测试）。如果系统键盘仍然显示，欢迎向我反馈。
 <li><p>按住字母键向上或向下拖动来输入聊天字母为大写的希顶字母。
 <li><p>单击 Shift 键输入大写字母，双击输入中写字母，连点三次打开大写锁定。
 </p></li></ul><!--
@@ -1161,19 +1162,21 @@ $out.onblur = function () {
 <ul>
 <li><p>
 </p></li></ul>
-<h2><span lang=qdx></span>IME 正式版本前瞻</h2>
-<p><span lang=qdx></span>IME 正式版计划作为一个 npm 包发布，除包含软键盘外，还将支持直接用物理键盘输入希顶字母（PUA 编码）。
-<p>在使用物理键盘输入时，按住 Shift 键输入聊天字母为大写的希顶字母，敲击一次 Shift 键后输入的第一个希顶字母将大写，敲击两次中写，敲击三次可以关闭或开启希顶字母输入模式。使用大写锁定键可以连续输入大写希顶字母。
-<p>另外，本人正在设计一门希顶语脚本编程语言 <span lang=qdx></span>Script（希脚语？），敬请期待。
-</p>-->
+-->
 <h2>更改日志</h2>
 <dl>
 <dt>2022–10–19
-<dd><li><a href="https://dgck81lnn.github.io/xdi8-ime/xdi8kbdproto.html">原型机 1 号</a>发布。</li>
+<dd><ul>
+<li><a href="https://dgck81lnn.github.io/xdi8-ime/xdi8kbdproto.html">原型机 1 号</a>发布。</li>
+</ul>
 <dt>2022–11-06
-<dd><li>本页面发布。</li>
+<dd><ul>
+<li>本页面发布。</li>
+</ul>
 <dt>2023-07-25
-<dd><li>修复了希顶字体可能无法加载的问题。</li>
+<dd><ul>
+<li>修复了希顶字体可能无法加载的问题。</li>
+</ul>
 </dl>
 </article><hr>
 <p>by <a href="https://wiki.xdi8.top/wiki/User:DGCK81LNN">DGCK81LNN</a></p>
