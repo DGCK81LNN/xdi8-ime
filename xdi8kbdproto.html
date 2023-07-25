@@ -9,8 +9,9 @@
 <style>
 @font-face {
 font-family: XEGOEPUAall;
-src: 
-url('https://wiki.xdi8.top/w/resources/assets/XEGOEPUAall%20Regular.ttf') format('truetype');
+src:
+url('https://dgck81lnn.github.io/bootstrap-lnn/fonts/XEGOEPUAall.woff2') format('woff2'),
+url('https://dgck81lnn.github.io/bootstrap-lnn/fonts/XEGOEPUAall.woff') format('woff');
 }
 
 :lang(qdx),
@@ -584,7 +585,7 @@ function onTouchUpdate(cx, cy, time) {
     if ($key.disabled) return
     rect = $key.getBoundingClientRect()
     return isPointInRect(rect, cx, cy)
-  })  
+  })
   if (!$slideNew) return
 
   if ($slide) {
@@ -639,7 +640,7 @@ $kb.addEventListener("touchmove", ev => {
   const touch = Array.from(ev.changedTouches).find(touch => touch.identifier === touchId)
   if (touch) onTouchUpdate(touch.clientX, touch.clientY, ev.timeStamp)
 
-  ev.preventDefault() 
+  ev.preventDefault()
 }, { passive: false })
 
 $kb.addEventListener("touchend", ev => {
@@ -720,7 +721,7 @@ $bksp.addEventListener("touchend", ev => {
 $bksp.addEventListener("touchcancel", ev => {
   bkspStop(true)
 })
-  
+
 $bksp.addEventListener("mousedown", ev => {
   bkspStart(ev.timeStamp)
   ev.stopPropagation()
