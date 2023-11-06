@@ -1,6 +1,6 @@
 # Xdi8IME 测试
 
-* [希顶软键盘二号原型机](https://dgck81lnn.github.io/xdi8-ime/xdi8kbdproto.html)
+* [希顶软键盘二号原型机](https://dgck81lnn.github.io/xdi8-ime/xdi8kbdproto2.html)
 
 * [实体键盘输入法预览](https://dgck81lnn.github.io/xdi8-ime/xdi8hwkbdimeproto.html)
 
