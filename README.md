@@ -7,7 +7,7 @@
 Xdi8IME 目前还在开发中。正式版计划作为一个 npm 包发布，支持实体键盘输入和软键盘功能，无 npm 依赖，开箱即用。届时将可以在网页上直接引用 Xdi8IME 来为整个网页添加希顶输入功能，类似这样：
 
 ~~~html
-<script src="https://cdn.jsdelivr.com/npm/xdi8-transcriber@0.1"></script>
+<script src="https://cdn.jsdelivr.com/npm/xdi8-ime@0.1"></script>
 <script>
 var xdi8IME = new Xdi8IME()
 </script>
