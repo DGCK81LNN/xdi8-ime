@@ -1,28 +1,16 @@
-# xdi8IME 软键盘原型演示
+# Xdi8IME 测试
 
-[Try it out!](https://dgck81lnn.github.io/xdi8-ime/xdi8kbdproto.html)
+* [希顶软键盘二号原型机](https://dgck81lnn.github.io/xdi8-ime/xdi8kbdproto.html)
 
-注：本 README 包含希顶字母形近替代字。您也可以点击上方链接来查看使用希顶字体渲染的版本。
+* [实体键盘输入法预览](https://dgck81lnn.github.io/xdi8-ime/xdi8hwkbdimeproto.html)
 
-## 说明
+Xdi8IME 目前还在开发中。正式版计划作为一个 npm 包发布，支持实体键盘输入和软键盘功能，无 npm 依赖，开箱即用。届时将可以在网页上直接引用 Xdi8IME 来为整个网页添加希顶输入功能，类似这样：
 
-  * 本原型版本仅支持触摸屏。 
-  * 本演示中的文本框会主动抑制系统软键盘的显示（已在 iOS 16.0 和安卓版 Chrome 中测试）。如果系统键盘仍然显示，欢迎向我反馈。 
-  * 按住字母键向上或向下拖动来输入聊天字母为大写的希顶字母。 
-  * 单击 Shift 键输入大写字母，双击输入中写字母，连点三次打开大写锁定。 
-  * 长按 Shift 键可显示并键入聊天字母为大写的希顶字母。（此功能在开发中的正式版本中将从软键盘中移除，只适用于物理键盘输入。）
-  * 目前暂未为 Symbol 键（əꜭiз）添加功能。 
+~~~html
+<script src="https://cdn.jsdelivr.com/npm/xdi8-transcriber@0.1"></script>
+<script>
+var xdi8IME = new Xdi8IME()
+</script>
+~~~
 
-## xdi8IME 正式版本前瞻
-
-xdi8IME 正式版计划作为一个 npm 包发布，除包含软键盘外，还将支持直接用物理键盘输入希顶字母（PUA 编码）。软键盘也将可以用鼠标点击。 
-
-在使用物理键盘输入时，按住 Shift 键输入聊天字母为大写的希顶字母，敲击一次 Shift 键后输入的第一个希顶字母将大写，敲击两次中写，敲击三次可以关闭或开启希顶字母输入模式。使用大写锁定键可以连续输入大写希顶字母。 
-
-另外，本人正在设计一门希顶语脚本编程语言 xdi8Script（希脚语？），敬请期待。 
-
-* * *
-
-by [DGCK81LNN](https://wiki.xdi8.top/wiki/User:DGCK81LNN) 2022–10–19
-
-QQ: 3470524928
+关于 Xdi8IME 的更多信息，请点击上方链接查看；关于本人的其他作品，请见[本人的希顶维基用户页](https://wiki.xdi8.top/wiki/User:DGCK81LNN)。
