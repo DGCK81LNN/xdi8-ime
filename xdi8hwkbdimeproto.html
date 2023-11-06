@@ -1,0 +1,249 @@
+<!DOCTYPE HTML>
+<html lang="cmn-Hans">
+<head>
+<meta charset=UTF-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>用于实体键盘的 Xdi8IME 演示</title>
+<link rel=canonical href="https://dgck81lnn.github.io/xdi8-ime/xdi8hwkbdimeproto.html">
+<link rel=stylesheet href="https://dgck81lnn.github.io/bootstrap-lnn/dist/bootstrap-lnn.min.css">
+<style>
+@font-face {
+font-family: XEGOEPUAall;
+src:
+url('https://dgck81lnn.github.io/bootstrap-lnn/fonts/XEGOEPUAall.woff2') format('woff2'),
+url('https://dgck81lnn.github.io/bootstrap-lnn/fonts/XEGOEPUAall.woff') format('woff');
+}
+
+#statusEl {
+  width: 2rem;
+  height: 1.5rem;
+  font: 1rem XEGOEPUAall;
+  display: flex;
+  border: 1px solid silver;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  margin: 2px 0;
+}
+
+#text,
+:lang(qdx) { font-family: XEGOEPUAall, sans-serif }
+
+#text {
+  font-size: 1rem;
+  height: 18rem;
+}
+</style>
+</head>
+<body class=m-2>
+<h1>用于实体键盘的 <span lang=qdx></span>IME 预览</h1>
+<div class="my-2">
+<div id=statusEl style="visibility: hidden"> </div>
+<textarea id=text class="form-control" placeholder="在此输入"></textarea>
+</div>
+<script>
+const tapMaxDur = 300
+const consecTapMaxInterv = 400
+
+const chatAlphabet = "!bpmwjqxynzDsrHNldtgkh45vF7BcfuaoeEAYL62T83V1i"
+const cases = [1, 0, 2]
+
+const wtf = {
+  "0": "",
+  "0'": "",
+  "1": "⇧",
+  "1'": "⇧",
+  "2": "⇩",
+  "2'": "⇩",
+  "3": "⇪",
+  "3'": "⇪",
+}
+
+function getShidinnLetter(i, cas) {
+  return String.fromCharCode(0xe020 + i + ((i >> 4) << 5) + (cas << 4))
+}
+
+function isAsciiAlphanumeric(ch) {
+  if (ch.length !== 1) return false
+  if (ch >= "0" && ch <= "9") return true
+  if (ch >= "A" && ch <= "Z") return true
+  if (ch >= "a" && ch <= "z") return true
+  return false
+}
+
+function getLetterFromChat(key, shift, altgr) {
+  if (altgr) {
+    if (key === "1") key = "!"
+    else if (key < "A") return ""
+    else key = key.toUpperCase()
+  }
+  const i = chatAlphabet.indexOf(key)
+  if (i === -1) return ""
+  return getShidinnLetter(i, cases[shift])
+}
+
+let shiftState = 0
+let shiftPressed = false
+let shiftDownTime = -Infinity
+let shiftUpTime = -Infinity
+let shiftOtherKeyPressed = false
+let capsLock = false
+let stickyAltgr = false
+let disabled = false
+
+function shiftDown(time) {
+  shiftPressed = true
+  shiftDownTime = time
+  shiftOtherKeyPressed = false
+}
+function shiftUp(time) {
+  if (!shiftPressed) return
+  if (shiftOtherKeyPressed) {
+    shiftReset()
+  } else if (!stickyAltgr && time - shiftDownTime <= tapMaxDur) {
+    if (
+      !shiftState ||
+      shiftDownTime - shiftUpTime <= consecTapMaxInterv
+    ) {
+      shiftState++
+      if (shiftState === 3) {
+        disabled = !disabled
+        shiftReset()
+      }
+    } else {
+      shiftReset()
+    }
+  } else {
+    if (stickyAltgr) {
+      shiftReset()
+    } else {
+      stickyAltgr = true
+    }
+  }
+
+  shiftPressed = false
+  shiftUpTime = time
+  shiftUpdate()
+}
+function shiftReset() {
+  shiftState = capsLock ? 3 : 0
+  shiftPressed = false
+  shiftDownTime = -Infinity
+  shiftUpTime = -Infinity
+  stickyAltgr = false
+}
+var _err = false
+function shiftUpdate() {
+  statusEl.textContent = disabled ? "OFF" : wtf[`${shiftState}${shiftPressed||stickyAltgr?"'":""}`]
+  statusEl.style.backgroundColor = disabled || _err ? "#fbb" : ["", "#ddf", "#bbb", "#bbd"][(!!shiftState << 1) | (shiftPressed||stickyAltgr)]
+  _err = false
+}
+
+function inputLetter(key) {
+  const ltr = getLetterFromChat(key, shiftState, stickyAltgr)
+  if (ltr) document.execCommand("insertText", false, ltr)
+  else _err = true
+}
+
+function alphanumericFromKeyCode(code) {
+  if (/^Key[A-Z]$/.test(code)) return code[3]
+  if (/^Digit[0-9]$/.test(code)) return code[5]
+}
+
+function updateCapsLock(ev) {
+  const on = ev.getModifierState("CapsLock")
+  if (capsLock === on) return
+  capsLock = on
+  if (on) {
+    shiftState = 3
+  } else {
+    shiftState = 0
+  }
+}
+
+text.onkeydown = ev => {
+  updateCapsLock(ev)
+  
+  if (ev.key === "Control" || ev.key === "Alt" || ev.key === "Meta" || ev.isComposing) {
+    shiftReset()
+    shiftUpdate()
+    return
+  }
+
+  if (ev.key === "Shift") {
+    if (ev.repeat || ev.ctrlKey || ev.altKey || ev.metaKey) return
+    shiftDown(performance.now())//ev.timeStamp)
+    shiftUpdate()
+    return
+  }
+
+  if (
+    !(disabled || ev.ctrlKey || ev.altKey || ev.metaKey) &&
+    isAsciiAlphanumeric(ev.key)
+  ) {
+    ev.preventDefault()
+    inputLetter(shiftPressed ? ev.key.toUpperCase() : ev.key.toLowerCase())
+  }
+
+  if (shiftPressed) {
+    shiftOtherKeyPressed = true
+  } else {
+    shiftReset()
+  }
+  shiftUpdate()
+}
+text.onkeyup = ev => {
+  if (ev.key === "Shift") {
+    shiftUp(performance.now())//ev.timeStamp)
+    return
+  }
+}
+
+function onFocusIn(ev) {
+  const $e = ev.target
+  if (
+    (
+      $e.nodeName === "INPUT" && ["text", "search"].includes($e.type) ||
+      $e.nodeName==="TEXTAREA"
+    ) &&
+    !$e.disabled && !$e.readOnly ||
+    $e.isContentEditable
+  ) {
+    statusEl.style.visibility = ""
+    shiftUpdate()
+  }
+}
+function onFocusOut(ev) {
+  statusEl.style.visibility = "hidden"
+}
+document.addEventListener("focusin", onFocusIn)
+document.addEventListener("focusout",onFocusOut)
+</script>
+
+<article>
+<h2>说明</h2>
+<ul>
+<li><p>请使用实体键盘输入。
+<li><p>按住 Shift 键来输入聊天字母为大写的希顶字母。敲击 Shift 键后再按字母键来输入大写字母，连敲两次后可输入中写字母；连敲三次开关输入法。
+<li><p>长按 Shift 键 0.3 秒以上，松开后再按字母键，也可输入聊天字母为大写的希顶字母。如果按住 Shift 键按数字 1，会正常输入感叹号；像这样长按 Shift 再松开后按数字 1，可输入零号字母 <span lang="qdx"></span>。
+</p></li></ul><!--
+<h2>已知问题</h2>
+<ul>
+<li><p>
+</p></li></ul>
+-->
+<h2>更改日志</h2>
+<dl>
+<dt>2023–11-06
+<dd><ul>
+<li>本页面发布。</li>
+</ul>
+</article><hr>
+<p>by <a href="https://wiki.xdi8.top/wiki/User:DGCK81LNN">DGCK81LNN</a></p>
+<p>若您发现 bug，欢迎向我反馈。QQ: 3470524928</p>
+<p>希顶语字体 XEGOEPUAall 和希顶字母图腾图片取自<a href="https://wiki.xdi8.top/" target=_blank>希顶维基</a>。</p>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<p><span id=busuanzi_container_page_pv style="display: none">本页面已被浏览 <span id=busuanzi_value_page_pv></span> 次。</span></p>
+</body>
+</html>
