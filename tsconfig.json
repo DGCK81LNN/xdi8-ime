@@ -1,0 +1,9 @@
+{
+  "include": ["src/**/*", "test/**/*"],
+  "compilerOptions": {
+    "target": "ES2015",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "types": []
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "xdi8-ime",
+  "version": "0",
+  "description": "Zero-dependency, out-of-the-box Shidinn IME for both desktop and mobile browsers",
+  "keywords": [
+    "xdi8",
+    "shidinn",
+    "希顶",
+    "希顶语"
+  ],
+  "devDependencies": {
+    "@types/html-minifier": "^4.0.4",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "esbuild": "^0.19.5",
+    "eslint": "^8.52.0",
+    "html-minifier": "^4.0.0"
+  },
+  "scripts": {
+    "build": "ts-node build/build.ts"
+  }
+}
