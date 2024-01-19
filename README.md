@@ -14,3 +14,5 @@ var xdi8IME = new Xdi8IME()
 ~~~
 
 关于 Xdi8IME 的更多信息，请点击上方链接查看；关于本人的其他作品，请见[本人的希顶维基用户页](https://wiki.xdi8.top/wiki/User:DGCK81LNN)。
+
+引流(?)：[DGCK81LNN/fairfax_xdpua](https://github.com/DGCK81LNN/fairfax_xdpua) — Fairfax字体 希顶字母PUA编码版
