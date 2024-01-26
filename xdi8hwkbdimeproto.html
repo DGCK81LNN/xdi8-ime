@@ -136,7 +136,7 @@ function shiftReset() {
 var _err = false
 function shiftUpdate() {
   statusEl.textContent = disabled ? "OFF" : wtf[`${shiftState}${shiftPressed||stickyAltgr?"'":""}`]
-  statusEl.style.backgroundColor = disabled || _err ? "#fbb" : ["", "#ddf", "#bbb", "#bbd"][(!!shiftState << 1) | (shiftPressed||stickyAltgr)]
+  statusEl.style.backgroundColor = disabled || _err ? "rgba(255,0,0,.5)" : ["", "rgba(128,128,255,.5)", "rgba(192,192,192,.5)", "rgba(160,160,224,.75)"][(!!shiftState << 1) | (shiftPressed||stickyAltgr)]
   _err = false
 }
 
@@ -219,6 +219,16 @@ function onFocusOut(ev) {
 }
 document.addEventListener("focusin", onFocusIn)
 document.addEventListener("focusout",onFocusOut)
+
+const dark = matchMedia("(prefers-color-scheme: dark)")
+function setTheme() {
+  document.documentElement.setAttribute(
+    "data-bs-theme",
+    dark.matches ? "dark" : "light"
+  )
+}
+dark.addEventListener("change", setTheme)
+setTheme()
 </script>
 
 <article>

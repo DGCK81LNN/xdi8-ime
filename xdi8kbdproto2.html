@@ -1169,6 +1169,16 @@ $out.onblur = function () {
   if (working) return
   k.hide()
 }
+
+const dark = matchMedia("(prefers-color-scheme: dark)")
+function setTheme() {
+  document.documentElement.setAttribute(
+    "data-bs-theme",
+    dark.matches ? "dark" : "light"
+  )
+}
+dark.addEventListener("change", setTheme)
+setTheme()
 </script>
 
 <article>
@@ -1202,6 +1212,7 @@ $out.onblur = function () {
 <dt>2024-01-26
 <dd><ul>
 <li>调整了键盘布局，见下图。浅红色为上下滑动对应键可输入的字符。<img src="images/layouts.jpg" title="修改前，键盘在字母模式和符号模式下都有 5 行键；修改后，符号模式下的键盘只有 4 行键，一些符号键被合并，且下标数字被移除了。"></li>
+<li>本页面现在会在系统的深色模式开启时自动切换为深色背景（之前只有键盘会变为深色）。</li>
 </ul>
 </dl>
 </article><hr>
