@@ -21,6 +21,12 @@ url('https://dgck81lnn.github.io/bootstrap-lnn/fonts/XEGOEPUAall.woff') format('
   font-size: 1rem;
   height: 18rem;
 }
+
+img {
+  display: block;
+  max-width: 100%;
+  max-height: 50vh;
+}
 </style>
 </head>
 <body class=m-2>
@@ -122,7 +128,7 @@ const _CSS = /*css*/ `
   --color-key: #fff;
   --color-press: #aab0bb;
   --color-shad: #87898d;
-  --color-ext: #7795ac;
+  /*--color-ext: #7795ac;*/
   --color-bar: #f0f0f1;
   --color-action: #3478f6;
 }
@@ -133,7 +139,7 @@ const _CSS = /*css*/ `
   --color-key: #9b9b9b;
   --color-press: #797979;
   --color-shad: #434343;
-  --color-ext: #bce;
+  /*--color-ext: #bce;*/
   --color-bar: #464748;
   --color-action: #fff;
 }
@@ -147,7 +153,8 @@ const _CSS = /*css*/ `
   --color-shad: #1d1d1d;
   --color-ext: #bce;
   --color-bar: #343434;
-  background: center / contain no-repeat url("https://wiki.xdi8.top/w/images/e/ed/Xdi8_Aho.png");
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
 }*/
 
 .bar {
@@ -189,15 +196,22 @@ const _CSS = /*css*/ `
   color: var(--color-text);
   padding-bottom: 16px;
   font-size: 1rem;
+  height: 13.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
 }
-.xdi8kbd-wrap[data-theme="glass"] .xdi8kbd {
+/*.xdi8kbd-wrap[data-theme="glass"] .xdi8kbd {
   opacity: 87%;
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
-}
+}*/
 
 .row {
+  flex: 1;
   display: flex;
+}
+.row-empty {
+  display: none;
 }
 
 .key-wrap {
@@ -212,10 +226,9 @@ const _CSS = /*css*/ `
 .quarterpad { width: 2.5% }
 
 .key {
-  width: 100%;
-  box-sizing: border-box;
-  margin: 0.3125rem 0.1875rem;
-  height: 2.25rem;
+  flex: 1;
+  margin: auto 0.1875rem;
+  height: calc(0.5rem + 62.5%);
 
   padding: 0;
   border: none;
@@ -226,7 +239,10 @@ const _CSS = /*css*/ `
   background-color: var(--color-key);
   border-radius: 0.3125rem;
   box-shadow: 0 1px var(--color-shad);
-  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .key.pressed { background-color: var(--color-press) }
 .key-gray { background-color: var(--color-press) }
@@ -236,9 +252,9 @@ const _CSS = /*css*/ `
   background-color: #fff;
   color: #000;
 }
-.key-shift:not([data-state="0"]).ext { color: #7795ac }
+/*.key-shift:not([data-state="0"]).ext { color: #7795ac }*/
 
-.key-label,
+/*.key-label,
 .key-icon {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
@@ -247,15 +263,15 @@ const _CSS = /*css*/ `
 .key-label {
   width: fit-content;
   height: fit-content;
-}
+}*/
 .key-shift .key-icon,
-.key-bksp .key-icon { visibility: hidden }
+.key-bksp .key-icon { display: none }
 .key-shift[data-state="0"] .key-icon-shift,
 .key-shift[data-state="1"] .key-icon-shift-filled,
 .key-shift[data-state="2"] .key-icon-shift-filled,
 .key-shift[data-state="3"] .key-icon-shift-filled-locked,
 .key-bksp:not(.pressed) .key-icon-bksp,
-.key-bksp.pressed .key-icon-bksp-filled { visibility: inherit }
+.key-bksp.pressed .key-icon-bksp-filled { display: block }
 
 .xdi8kbd-wrap[data-funny-shift] .key-shift .key-icon { transition: transform 150ms }
 .key-shift[data-state="2"] .key-icon { transform: rotate(180deg) }
@@ -274,21 +290,22 @@ const _CSS = /*css*/ `
 .xdi8kbd[data-layout="1"] .key-printable .key-label { transform: translateY(0.0625em) }
 .xdi8kbd[data-layout="2"] .key-printable .key-label { transform: translateY(-0.1875em) }
 
-/* 空格键上的字 */
+/* 空格、换行、Symbol 键上的字 */
 .key-captsm { font-size: 1rem }
 
 /* 字符预览 */
 .balloon {
   position: absolute;
-  font: 2.25rem "XEGOEPUAall";
+  font-size: 2.25rem;
   line-height: 3rem;
   min-width: 3rem;
   padding: 0.375rem 0;
   text-align: center;
   color: var(--color-text);
   background-color: var(--color-key);
-  border-radius: 0.46875rem;
-  box-shadow: /*0 1px #87898d,*/ 0 4px 16px rgba(0, 0, 0, 0.3);
+  border: 0.25px solid var(--color-bg);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
   transform: translate(-50%, calc(-100% - 1rem));
 }
 
@@ -393,15 +410,15 @@ function getLtrLayouts(showExtLetters) {
 }
 
 const symbolLayout = [
-  "1234567890",
-  [..."\u27e6\u27e7:;()","*×",{default:"$",altgr:"¥"},..."&@"],
-  ["-—","/÷",..."<>~“”\"·"],
-  [...".,?!",{default:"’",altgr:"‘",toggleSymbol:true}],
+  [..."123456789", "0°"],
+  ["-—","/÷",...":;()", "$¥", ..."&@\""],
+  [],
+  [...".,?!",{default:"'",toggleSymbol:true}],
 ].map(l => Array.from(l, c => typeof c === "string" ? { default: c[0], altgr: c[1] } : c))
-const symbolLayout2 = [
-  [..."\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009",{default:"\ue00a",altgr:"\ue00b"}],
-  [..."[]{}#%^","+−",..."=\ue00c"],
-  [..."\\|\u2039\u203a\u2662\xab\xbb",{default:"\u21e7",altgr:"\u21e9"},"`"],
+const symbolShiftLayout = [
+  ["[\u27e6","]\u27e7",..."{}#%^","*×","+−","="],
+  [..."_\\|~<>", "\xab\u2039", "\xbb\u203a", "\u2662","·`"],
+  [],
   [...".,?!",{default:"'",toggleSymbol:true}],
 ].map(l => Array.from(l, c => typeof c === "string" ? { default: c[0], altgr: c[1] } : c))
 
@@ -447,11 +464,12 @@ class Keyboard extends EventEmitter {
     this.symbolShift = new SymbolShiftKey(this.$container.querySelector(".key-symbolshift"), this)
 
     this.layouts = getLtrLayouts()
-    this.symbolLayouts = [symbolLayout, symbolLayout2]
+    this.symbolLayouts = [symbolLayout, symbolShiftLayout]
 
     this.closeBtn = new BarButton(this.$container.querySelector(".bar-btn-close"), this)
     this.closeBtn.press = () => {
-      this.$doc.activeElement?.blur()
+      this.$parent.ownerDocument.activeElement?.blur()
+      this.hide()
     }
     this.$parent = document.createElement("xdi8ime-keyboard")
     document.documentElement.appendChild(this.$parent)
@@ -615,6 +633,7 @@ class PrintableKeyArray {
   constructor(kbd) {
     this.kbd = kbd
     this.$marks = [...kbd.$container.querySelectorAll(".key-insertionmark")]
+    this.$rows = this.$marks.map($mark => $mark.parentElement)
     this.rows = this.$marks.map($mark => [])
     this.space = new SpaceKey(kbd.$container.querySelector(".key-space"))
     this.slidables = [this.space]
@@ -750,6 +769,8 @@ class PrintableKeyArray {
       const rowDef = layout[rowIndex]
       while (row.length < rowDef.length)
         row.push(new PrintableKey(this.$marks[rowIndex]))
+      if (rowDef.length === 0) this.$rows[rowIndex].classList.add("row-empty")
+      else this.$rows[rowIndex].classList.remove("row-empty")
       row.forEach((key, keyIndex) => {
         if (keyIndex < rowDef.length) this.slidables.push(key)
         key.update(rowDef[keyIndex])
@@ -1176,6 +1197,11 @@ $out.onblur = function () {
 <dt>2023-11-06
 <dd><ul>
 <li>修复了希顶字体可能无法加载的问题。（此修复原本在 2023-07-25 完成，但忘记推送，导致一直未实装。）</li>
+</ul>
+</dl>
+<dt>2024-01-26
+<dd><ul>
+<li>调整了键盘布局，见下图。浅红色为上下滑动对应键可输入的字符。<img src="images/layouts.jpg" title="修改前，键盘在字母模式和符号模式下都有 5 行键；修改后，符号模式下的键盘只有 4 行键，一些符号键被合并，且下标数字被移除了。"></li>
 </ul>
 </dl>
 </article><hr>
