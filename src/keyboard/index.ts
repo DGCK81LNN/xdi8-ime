@@ -7,8 +7,8 @@ import {
   DocumentEventListenerRegister,
 } from "../utils"
 
-declare const _KEYBOARD_HTML: string
-declare const _KEYBOARD_CSS: string
+import html from "./dom.html"
+import css from "./style.css"
 
 const minVisualFeedbackDur = 100
 const altgrMaxDX = 20
@@ -71,22 +71,15 @@ function _makeLayout(
 }
 
 const symbolLayout = _makeLayout([
-  "1234567890",
-  [..."\u27e6\u27e7:;()", "*×", { default: "$", altgr: "¥" }, ..."&@"],
-  ["-—", "/÷", ...'<>~“”"·'],
-  [...".,?!", { default: "’", altgr: "‘", toggleSymbol: true }],
+  [..."123456789", "0°"],
+  ["-—", "/÷", ...":;()", "$¥", ...'&@"'],
+  [],
+  [...".,?!", { default: "'", toggleSymbol: true }],
 ])
 const symbolShiftLayout = _makeLayout([
-  [
-    ..."\ue001\ue002\ue003\ue004\ue005\ue006\ue007\ue008\ue009",
-    { default: "\ue00a", altgr: "\ue00b" },
-  ],
-  [..."[]{}#%^", "+−", ..."=\ue00c"],
-  [
-    ..."\\|\u2039\u203a\u2662\xab\xbb",
-    { default: "\u21e7", altgr: "\u21e9" },
-    "`",
-  ],
+  ["[\u27e6", "]\u27e7", ..."{}#%^", "*×", "+−", "="],
+  [..."_\\|~<>", "\xab\u2039", "\xbb\u203a", "\u2662", "·`"],
+  [],
   [...".,?!", { default: "'", toggleSymbol: true }],
 ])
 
@@ -151,7 +144,7 @@ export class Keyboard extends EventEmitter<{
         : new DocumentEventListenerRegister($doc)
 
     this.$container = $doc.createElement("div")
-    this.$container.innerHTML = _KEYBOARD_HTML
+    this.$container.innerHTML = html
     this.$container.className = "xdi8kbd-wrap"
     this.$container.hidden = true
     this.$container.addEventListener("touchstart", ev => {
@@ -194,12 +187,13 @@ export class Keyboard extends EventEmitter<{
     this.closeBtn.press = () => {
       const $e = this.$doc?.activeElement
       if (_isHTMLOrSVGElement($e)) $e.blur()
+      this.hide()
     }
     this.$parent = document.createElement("xdi8-ime-keyboard")
     document.documentElement.appendChild(this.$parent)
 
     this.$style = $doc.createElement("style")
-    this.$style.textContent = _KEYBOARD_CSS
+    this.$style.textContent = css
 
     this.$padding = $doc.createElement("div")
     this.$padding.className = "xdi8kbd-pad"
@@ -360,6 +354,7 @@ export type TouchIdentifier = number | typeof mouse
  */
 export class PrintableKeyArray {
   $marks: Element[]
+  $rows: Element[]
   rows: PrintableKey[][]
   space: SpaceKey
   slidables: SlidableKey[]
@@ -372,6 +367,9 @@ export class PrintableKeyArray {
 
   constructor(public kbd: Keyboard) {
     this.$marks = [...kbd.$container.querySelectorAll(".key-insertionmark")]
+    this.$rows = this.$marks.map($mark =>
+      nn($mark.parentElement, "$mark.parentElement")
+    )
     this.rows = this.$marks.map(() => [])
     this.space = new SpaceKey(_querySelector(kbd.$container, ".key-space"))
     this.slidables = [this.space]
@@ -535,6 +533,8 @@ export class PrintableKeyArray {
       const rowDef = layout[rowIndex]
       while (row.length < rowDef.length)
         row.push(new PrintableKey(this.$marks[rowIndex]))
+      if (rowDef.length === 0) this.$rows[rowIndex].classList.add("row-empty")
+      else this.$rows[rowIndex].classList.remove("row-empty")
       row.forEach((key, keyIndex) => {
         key.update(rowDef[keyIndex] || null)
         // Non-slidable (i.e. disabled) prinable-keys are not pushed
@@ -597,7 +597,10 @@ export class SpaceKey extends PreconstructedKey {
 }
 
 export abstract class SingletonKey extends PreconstructedKey {
-  constructor($body: HTMLElement, public readonly kbd: Keyboard) {
+  constructor(
+    $body: HTMLElement,
+    public readonly kbd: Keyboard
+  ) {
     super($body)
 
     this.$wrap.addEventListener(
@@ -875,7 +878,10 @@ export class SymbolShiftKey extends BaseSymbolKey {
 
 export class BarButton {
   pressed = false
-  constructor(public $body: HTMLElement, public kbd: Keyboard) {
+  constructor(
+    public $body: HTMLElement,
+    public kbd: Keyboard
+  ) {
     $body.addEventListener("touchstart", () => {
       this.pressed = true
     })

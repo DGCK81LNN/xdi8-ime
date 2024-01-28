@@ -53,7 +53,8 @@
   --color-shad: #1d1d1d;
   --color-ext: #bce;
   --color-bar: #343434;
-  background: center / contain no-repeat url("https://wiki.xdi8.top/w/images/e/ed/Xdi8_Aho.png");
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
 }*/
 
 .bar {
@@ -95,15 +96,22 @@
   color: var(--color-text);
   padding-bottom: 16px;
   font-size: 1rem;
+  height: 13.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
 }
-.xdi8kbd-wrap[data-theme="glass"] .xdi8kbd {
+/*.xdi8kbd-wrap[data-theme="glass"] .xdi8kbd {
   opacity: 87%;
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
-}
+}*/
 
 .row {
+  flex: 1;
   display: flex;
+}
+.row-empty {
+  display: none;
 }
 
 .key-wrap {
@@ -118,10 +126,9 @@
 .quarterpad { width: 2.5% }
 
 .key {
-  width: 100%;
-  box-sizing: border-box;
-  margin: 0.3125rem 0.1875rem;
-  height: 2.25rem;
+  flex: 1;
+  margin: auto 0.1875rem;
+  height: calc(0.5rem + 62.5%);
 
   padding: 0;
   border: none;
@@ -132,7 +139,10 @@
   background-color: var(--color-key);
   border-radius: 0.3125rem;
   box-shadow: 0 1px var(--color-shad);
-  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .key.pressed { background-color: var(--color-press) }
 .key-gray { background-color: var(--color-press) }
@@ -142,9 +152,9 @@
   background-color: #fff;
   color: #000;
 }
-.key-shift:not([data-state="0"]).ext { color: #7795ac }
+/*.key-shift:not([data-state="0"]).ext { color: #7795ac }*/
 
-.key-label,
+/*.key-label,
 .key-icon {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
@@ -153,15 +163,15 @@
 .key-label {
   width: fit-content;
   height: fit-content;
-}
+}*/
 .key-shift .key-icon,
-.key-bksp .key-icon { visibility: hidden }
+.key-bksp .key-icon { display: none }
 .key-shift[data-state="0"] .key-icon-shift,
 .key-shift[data-state="1"] .key-icon-shift-filled,
 .key-shift[data-state="2"] .key-icon-shift-filled,
 .key-shift[data-state="3"] .key-icon-shift-filled-locked,
 .key-bksp:not(.pressed) .key-icon-bksp,
-.key-bksp.pressed .key-icon-bksp-filled { visibility: inherit }
+.key-bksp.pressed .key-icon-bksp-filled { display: block }
 
 .xdi8kbd-wrap[data-funny-shift] .key-shift .key-icon { transition: transform 150ms }
 .key-shift[data-state="2"] .key-icon { transform: rotate(180deg) }
@@ -180,21 +190,22 @@
 .xdi8kbd[data-layout="1"] .key-printable .key-label { transform: translateY(0.0625em) }
 .xdi8kbd[data-layout="2"] .key-printable .key-label { transform: translateY(-0.125em) }
 
-/* 空格键上的字 */
+/* 空格、换行、Symbol 键上的字 */
 .key-captsm { font-size: 1rem }
 
 /* 字符预览 */
 .balloon {
   position: absolute;
-  font: 2.25rem "XEGOEPUAall";
+  font-size: 2.25rem;
   line-height: 3rem;
   min-width: 3rem;
   padding: 0.375rem 0;
   text-align: center;
   color: var(--color-text);
   background-color: var(--color-key);
-  border-radius: 0.46875rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  border: 0.25px solid var(--color-bg);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
   transform: translate(-50%, calc(-100% - 1rem));
 }
 

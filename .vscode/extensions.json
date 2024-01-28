@@ -1,0 +1,6 @@
+{
+  "recommendations": [
+    "dkneeland.yarn-task-provider",
+    "dbaeumer.vscode-eslint"
+  ]
+}

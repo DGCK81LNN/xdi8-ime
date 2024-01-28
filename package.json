@@ -10,12 +10,18 @@
   ],
   "devDependencies": {
     "@types/html-minifier": "^4.0.4",
+    "@types/node": "^20.11.7",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "esbuild": "^0.19.5",
     "eslint": "^8.52.0",
-    "html-minifier": "^4.0.0"
+    "html-minifier": "^4.0.0",
+    "prettier": "^3.2.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   },
   "scripts": {
-    "build": "ts-node build/build.ts"
-  }
+    "build": "ts-node build/build.ts",
+    "lint": "eslint"
+  },
+  "packageManager": "yarn@4.0.2"
 }

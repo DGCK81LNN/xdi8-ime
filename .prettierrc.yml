@@ -1,0 +1,6 @@
+semi: false
+
+# below are kept to avoid modifing the code too much. remove when ready to style
+arrowParens: avoid
+trailingComma: es5
+#experimentalTernaries: true
