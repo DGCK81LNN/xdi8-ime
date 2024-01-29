@@ -4,7 +4,7 @@
 
 * [实体键盘输入法预览](https://dgck81lnn.github.io/xdi8-ime/xdi8hwkbdimeproto.html)
 
-Xdi8IME 目前还在开发中，以上页面的源代码见 [gh-pages 分支](https://github.com/DGCK81LNN/xdi8-ime/tree/gh-pages)。正式版计划作为一个 npm 包发布，支持实体键盘输入和软键盘功能，开箱即用。届时将可以在网页上直接引用 Xdi8IME 来为整个网页添加希顶输入功能，类似这样：
+[Xdi8IME](https://github.com/DGCK81LNN/xdi8-ime) 目前还在开发中，以上页面的源代码见 [gh-pages 分支](https://github.com/DGCK81LNN/xdi8-ime/tree/gh-pages)。正式版计划作为一个 npm 包发布，支持实体键盘输入和软键盘功能，开箱即用。届时将可以在网页上直接引用 Xdi8IME 来为整个网页添加希顶输入功能，类似这样：
 
 ~~~html
 <script src="https://cdn.jsdelivr.com/npm/xdi8-ime@0.1"></script>
