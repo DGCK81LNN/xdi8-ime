@@ -1,4 +1,4 @@
-# Xdi8IME 预览
+# 预览页
 
 * [希顶软键盘二号原型机](https://dgck81lnn.github.io/xdi8-ime/xdi8kbdproto2.html)
 
