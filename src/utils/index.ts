@@ -13,26 +13,24 @@ export function nnm<T>(value: T, msg: string) {
   return value
 }
 
-export class EventEmitter<M> {
+export class EventEmitter<M extends Record<string | symbol, unknown>> {
   private readonly _eventListeners: {
     type: keyof M
-    handler: (...args: unknown[]) => void
+    handler: (event: unknown) => void
   }[] = []
-  on<T extends keyof M>(
-    type: T,
-    handler: (...args: M[T] extends unknown[] ? M[T] : unknown[]) => void
-  ) {
+  on<T extends keyof M>(type: T, handler: (event: M[T]) => void) {
     this._eventListeners.push({
       type,
-      handler: handler as (...args: unknown[]) => void,
+      handler: handler as (event: unknown) => void,
     })
   }
-  emit<T extends keyof M>(
-    type: T,
-    ...args: M[T] extends unknown[] ? M[T] : unknown[]
-  ) {
+  emit<T extends { [T in keyof M]: M[T] extends {} ? never : T }[keyof M] & {}>(
+    type: T
+  ): void
+  emit<T extends keyof M>(type: T, event: M[T]): void
+  emit<T extends keyof M>(type: T, event?: M[T]) {
     for (const listener of this._eventListeners) {
-      if (listener.type === type) listener.handler.apply(this, args)
+      if (listener.type === type) listener.handler.call(this, event)
     }
   }
   dispose() {

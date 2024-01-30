@@ -98,13 +98,13 @@ function _querySelector<T extends Element = HTMLElement>(
 }
 
 export class Keyboard extends EventEmitter<{
-  reset: []
-  bkspdown: []
-  touchstart: []
-  touchout: []
-  printablekeytouch: []
-  printablekeypress: [key: SlidableKey, altgr: boolean]
-  enterpress: []
+  reset: void
+  bkspdown: void
+  touchstart: void
+  touchout: void
+  printablekeytouch: void
+  printablekeypress: { key: SlidableKey; altgr: boolean }
+  enterpress: void
 }> {
   readonly $doc: Document
   readonly $parent: HTMLElement
@@ -509,7 +509,10 @@ export class PrintableKeyArray {
       const def = this.activeKey.def
       const char = this.altgr ? def.altgr : def.default
       this.kbd.execute("insertText", char)
-      this.kbd.emit("printablekeypress", this.activeKey, this.altgr)
+      this.kbd.emit("printablekeypress", {
+        key: this.activeKey,
+        altgr: this.altgr,
+      })
 
       this.activeKey.unpress()
       this.balloon.hide()
@@ -825,7 +828,7 @@ export class SymbolKey extends BaseSymbolKey {
   constructor($body: HTMLElement, kbd: Keyboard) {
     super($body, kbd, "", "")
 
-    kbd.on("printablekeypress", key => {
+    kbd.on("printablekeypress", ({ key }) => {
       if (!this.kbd.symbols) return
       if (
         key.def?.toggleSymbol ||

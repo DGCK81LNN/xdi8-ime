@@ -12,7 +12,7 @@ esbuild.build({
   sourcemap: true,
   outfile: "site/test.bundle.min.js",
   platform: "browser",
-  target: ["es2015", "chrome51", "edge15", "safari10", "firefox54", "opera38"],
+  target: ["es2015", "chrome51", "safari10", "firefox54"],
   supported: {
     // safari10 is by default considered to not support const
     "const-and-let": true,
